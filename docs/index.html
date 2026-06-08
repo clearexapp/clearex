@@ -2,6 +2,9 @@
 <html lang="pl">
 <head>
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +18,17 @@ html{
 }
 
 body{
-    font-family:'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-family:'Inter', 'Segoe UI', sans-serif;
     background:#000;
     color:white;
     overflow-x:hidden;
     position:relative;
+    letter-spacing:0;
+}
+
+h1, h2, h3, .logo, button, .card-content, .review-author{
+    font-family:'Rajdhani', 'Inter', sans-serif;
+    letter-spacing:0.04em;
 }
 
 /* ANIMATED BACKGROUND */
@@ -293,7 +302,7 @@ body{
 .download-btn, .back-btn, .review-btn, .delete-btn, .reply-btn, .auth-btn{
     margin-top:50px;
     padding:20px 50px;
-    border-radius:50px;
+    border-radius:14px;
     border:2px solid #7c3aed;
     background:rgba(124,58,237,0.1);
     color:white;
@@ -416,7 +425,7 @@ body{
 .feature-details{
     background:rgba(30,30,50,0.4);
     border:2px solid rgba(124,58,237,0.3);
-    border-radius:25px;
+    border-radius:14px;
     padding:50px;
     max-width:800px;
     margin:40px auto;
@@ -463,7 +472,7 @@ body{
 .review-card{
     background:rgba(30,30,50,0.4);
     border:2px solid rgba(124,58,237,0.3);
-    border-radius:20px;
+    border-radius:14px;
     padding:30px;
     margin-bottom:30px;
     backdrop-filter:blur(20px);
@@ -472,7 +481,21 @@ body{
 
 .review-card:hover{
     border-color:#7c3aed;
-    transform:translateX(10px);
+    transform:translateX(6px);
+}
+
+.review-empty, .reviews-loading, .reviews-error{
+    color:#94a3b8;
+    text-align:center;
+    padding:28px;
+    border:1px solid rgba(124,58,237,0.25);
+    border-radius:14px;
+    background:rgba(15,15,30,0.48);
+}
+
+.reviews-error{
+    color:#fca5a5;
+    border-color:rgba(239,68,68,0.35);
 }
 
 .review-header{
@@ -568,7 +591,7 @@ body{
 .reply-card{
     background:rgba(17,17,17,0.6);
     border-left:3px solid #06b6d4;
-    border-radius:10px;
+    border-radius:12px;
     padding:15px;
     margin-bottom:15px;
     margin-left:20px;
@@ -619,7 +642,7 @@ body{
     margin:40px auto;
     background:rgba(30,30,50,0.4);
     border:2px solid rgba(124,58,237,0.3);
-    border-radius:20px;
+    border-radius:14px;
     padding:40px;
     backdrop-filter:blur(20px);
 }
@@ -648,9 +671,9 @@ body{
     padding:12px;
     background:rgba(17,17,17,0.8);
     border:2px solid rgba(124,58,237,0.3);
-    border-radius:10px;
+    border-radius:12px;
     color:white;
-    font-family:inherit;
+    font-family:'Inter', sans-serif;
     transition:all 0.3s ease;
 }
 
@@ -753,7 +776,7 @@ body{
     margin:40px auto;
     background:rgba(30,30,50,0.4);
     border:2px solid rgba(124,58,237,0.3);
-    border-radius:20px;
+    border-radius:14px;
     padding:40px;
     backdrop-filter:blur(20px);
 }
@@ -800,7 +823,7 @@ body{
 .card{
     background:rgba(30,30,50,0.4);
     padding:50px 30px;
-    border-radius:25px;
+    border-radius:14px;
     border:2px solid rgba(124,58,237,0.3);
     backdrop-filter:blur(20px);
     transition:all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -825,7 +848,7 @@ body{
     content:'';
     position:absolute;
     inset:0;
-    border-radius:25px;
+    border-radius:14px;
     padding:2px;
     background:linear-gradient(135deg, #7c3aed, #ec4899, transparent);
     -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -939,7 +962,7 @@ body{
 .modal-content{
     background:rgba(30,30,50,0.95);
     border:2px solid rgba(124,58,237,0.5);
-    border-radius:25px;
+    border-radius:16px;
     padding:50px;
     max-width:500px;
     width:90%;
@@ -992,6 +1015,47 @@ body{
     .review-header{flex-direction:column;align-items:flex-start;}
     .modal-content{padding:30px;}
     .auth-form-container{padding:30px;}
+    .download-panel{margin:34px 20px 0;padding:20px;}
+    .download-meta{grid-template-columns:1fr;}
+}
+
+.download-panel{
+    margin:38px auto 0;
+    max-width:560px;
+    padding:24px;
+    border:1px solid rgba(6,182,212,0.35);
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(15,15,30,0.72), rgba(124,58,237,0.14));
+    box-shadow:0 0 34px rgba(6,182,212,0.12), inset 0 0 24px rgba(124,58,237,0.08);
+    backdrop-filter:blur(18px);
+}
+
+.download-panel .download-btn{
+    margin-top:0;
+    width:100%;
+}
+
+.download-meta{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    margin-top:16px;
+    color:#94a3b8;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.download-meta span{
+    padding:10px 12px;
+    border:1px solid rgba(124,58,237,0.28);
+    border-radius:10px;
+    background:rgba(0,0,0,0.24);
+}
+
+.download-btn.is-disabled{
+    cursor:not-allowed;
+    opacity:0.92;
 }
 
 </style>
@@ -1121,11 +1185,17 @@ body{
             <h1 id="title">Optymalizuj Windows jak profesjonalista</h1>
             <p id="desc">Zwiększ FPS, usuń lagi i przyspiesz system.</p>
 
-            <button class="download-btn" onclick="startDownload()" id="download-btn">
-                ⬇ Pobierz
-            </button>
-
-            <div id="download-status"></div>
+            <div class="download-panel">
+                <button class="download-btn is-disabled" onclick="startDownload()" id="download-btn" type="button" aria-describedby="download-status">
+                    🎮 Wersja Windows w budowie
+                </button>
+                <div class="download-meta" aria-hidden="true">
+                    <span>Windows .exe</span>
+                    <span>Cloud ready</span>
+                    <span>Coming soon</span>
+                </div>
+                <div id="download-status">Plik Clearnix.exe jest w trakcie budowania.</div>
+            </div>
         </div>
     </section>
 
@@ -1241,6 +1311,7 @@ body{
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
 <script>
@@ -1251,6 +1322,11 @@ let userAvatar=null;
 let currentLang='pl';
 const ADMIN_EMAIL='clearnixapp@gmail.com';
 let firebaseAuth=null;
+let firebaseDb=null;
+let cachedReviews=[];
+const REVIEWS_COLLECTION='reviews';
+const DOWNLOAD_URL='/clearnix/downloads/Clearnix.exe';
+const DOWNLOAD_READY=false;
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUC305L4VXS2w5RryCgODKBFUPbCJEV5c",
@@ -1296,6 +1372,7 @@ function initializeFirebase(){
             firebase.initializeApp(firebaseConfig);
         }
         firebaseAuth=firebase.auth();
+        firebaseDb=firebase.firestore();
         try{
             firebase.analytics();
         }catch(analyticsErr){
@@ -1582,263 +1659,311 @@ function showReviewForm(){
     }
 }
 
-function submitReview(e){
+async function submitReview(e){
     e.preventDefault();
-    
-    if(!currentUser || !userEmail){
+
+    if(!currentUser || !userEmail || !firebaseAuth || !firebaseAuth.currentUser){
         alert('Musisz się zalogować!');
         return;
     }
-    
+
+    if(!firebaseDb){
+        alert('Opinie w chmurze nie są jeszcze gotowe. Odśwież stronę i spróbuj ponownie.');
+        return;
+    }
+
     const rating=document.getElementById('rating').value;
-    const opinion=document.getElementById('opinion').value;
-    
+    const opinion=document.getElementById('opinion').value.trim();
+
     if(!rating || !opinion){
         alert('Wypełnij wszystkie pola!');
         return;
     }
-    
-    const reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
-    if(reviews.some(r=>r.email===userEmail)){
-        alert('Już dodałeś opinię! Każdy użytkownik może dodać max. 1 opinię.');
-        return;
+
+    const uid=firebaseAuth.currentUser.uid;
+    const reviewRef=firebaseDb.collection(REVIEWS_COLLECTION).doc(uid);
+    const submitBtn=document.getElementById('submit-btn');
+
+    if(submitBtn){
+        submitBtn.disabled=true;
+        submitBtn.innerText='Zapisywanie...';
     }
-    
-    const review={
-        id:Date.now(),
-        author:currentUser,
-        email:userEmail,
-        avatar:userAvatar,
-        rating:parseInt(rating),
-        text:opinion,
-        date:new Date().toLocaleDateString('pl-PL'),
-        approved:true,
-        replies:[]
-    };
-    
-    reviews.push(review);
-    localStorage.setItem('reviews',JSON.stringify(reviews));
-    
-    alert('Dziękuję za opinię!');
-    document.getElementById('rating').value='';
-    document.getElementById('opinion').value='';
-    document.getElementById('char-count').innerText='0/500';
-    
-    loadReviews();
+
+    try{
+        const existing=await reviewRef.get();
+        if(existing.exists){
+            alert('Już dodałeś opinię! Każdy użytkownik może dodać max. 1 opinię.');
+            return;
+        }
+
+        const now=new Date();
+        await reviewRef.set({
+            uid,
+            author:currentUser,
+            email:userEmail,
+            avatar:userAvatar,
+            rating:parseInt(rating,10),
+            text:opinion,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            dateLabel:now.toLocaleDateString('pl-PL'),
+            approved:true
+        });
+
+        alert('Opinia zapisana. Dziękuję za opinię!');
+        document.getElementById('rating').value='';
+        document.getElementById('opinion').value='';
+        document.getElementById('char-count').innerText='0/500';
+        await loadReviews();
+    }catch(err){
+        console.log('Błąd zapisywania opinii:', err);
+        alert('Nie udało się zapisać opinii. Sprawdź reguły Firestore i spróbuj ponownie.');
+    }finally{
+        if(submitBtn){
+            submitBtn.disabled=false;
+            submitBtn.innerText=(translations[currentLang]&&translations[currentLang]['submit-btn'])||'Wyślij opinię';
+        }
+    }
 }
 
-function submitReply(e,reviewId){
+async function submitReply(e,reviewId){
     e.preventDefault();
-    
+
     if(userEmail!==ADMIN_EMAIL){
         alert('Tylko admin może odpowiadać!');
         return;
     }
-    
-    const replyText=document.getElementById(`reply-text-${reviewId}`).value;
-    if(!replyText.trim()){
+
+    if(!firebaseDb){
+        alert('Firestore nie jest gotowy. Odśwież stronę i spróbuj ponownie.');
+        return;
+    }
+
+    const replyText=document.getElementById(`reply-text-${reviewId}`).value.trim();
+    if(!replyText){
         alert('Wpisz odpowiedź!');
         return;
     }
-    
-    let reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
-    const review=reviews.find(r=>r.id===reviewId);
-    
-    if(review){
-        if(!review.replies) review.replies=[];
-        review.replies.push({
+
+    try{
+        await firebaseDb.collection(REVIEWS_COLLECTION).doc(reviewId).collection('replies').add({
             author:'Clearnix Creator',
-            avatar:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2306b6d4"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/%3E%3C/svg%3E',
+            avatar:adminAvatar(),
             text:replyText,
-            date:new Date().toLocaleDateString('pl-PL')
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            dateLabel:new Date().toLocaleDateString('pl-PL')
         });
-        localStorage.setItem('reviews',JSON.stringify(reviews));
-        loadReviews();
+        await loadReviews();
+    }catch(err){
+        console.log('Błąd zapisywania odpowiedzi:', err);
+        alert('Nie udało się zapisać odpowiedzi.');
     }
 }
 
-function loadReviews(){
-    const reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
-    const isAdmin=userEmail===ADMIN_EMAIL;
-    
-    let html='';
-    reviews.forEach(review=>{
-        const stars='⭐'.repeat(review.rating);
-        let repliesHtml='';
-        
-        if(review.replies && review.replies.length>0){
-            repliesHtml='<div class="replies-section">';
-            review.replies.forEach(reply=>{
-                repliesHtml+=`
-                    <div class="reply-card">
-                        <img src="${reply.avatar}" class="reply-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2306b6d4%22%3E%3Cpath d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z%22/%3E%3C/svg%3E'">
-                        <div class="reply-content">
-                            <div class="reply-header">
-                                <div>
-                                    <span class="reply-author">${reply.author}</span>
-                                    <span class="creator-badge">Creator</span>
-                                </div>
-                                <span class="reply-date">${reply.date}</span>
-                            </div>
-                            <div class="reply-text">${reply.text}</div>
-                        </div>
-                    </div>
-                `;
+async function loadReviews(){
+    const allReviewsList=document.getElementById('all-reviews-list');
+    const homeReviewsList=document.getElementById('reviews-list');
+    const loading='<div class="reviews-loading">Ładowanie opinii...</div>';
+
+    if(allReviewsList) allReviewsList.innerHTML=loading;
+    if(homeReviewsList) homeReviewsList.innerHTML=loading;
+
+    if(!firebaseDb){
+        return;
+    }
+
+    try{
+        const snapshot=await firebaseDb.collection(REVIEWS_COLLECTION).orderBy('createdAt','desc').get();
+        const reviews=[];
+
+        for(const doc of snapshot.docs){
+            const data=doc.data();
+            if(data.approved===false) continue;
+
+            const repliesSnapshot=await firebaseDb.collection(REVIEWS_COLLECTION).doc(doc.id).collection('replies').orderBy('createdAt','asc').get();
+            const replies=repliesSnapshot.docs.map(replyDoc=>({
+                id:replyDoc.id,
+                ...replyDoc.data()
+            }));
+
+            reviews.push({
+                id:doc.id,
+                uid:data.uid||doc.id,
+                author:data.author||'Użytkownik',
+                email:data.email||'',
+                avatar:data.avatar||defaultAvatar(),
+                rating:Number(data.rating)||5,
+                text:data.text||'',
+                dateLabel:data.dateLabel||formatFirestoreDate(data.createdAt),
+                createdAt:data.createdAt||null,
+                replies
             });
-            repliesHtml+='</div>';
         }
-        
-        let replyFormHtml='';
-        if(isAdmin){
-            replyFormHtml=`
-                <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(124,58,237,0.2);">
-                    <form onsubmit="submitReply(event, ${review.id})">
-                        <div class="form-group">
-                            <textarea id="reply-text-${review.id}" placeholder="Odpowiedź od administratora..." required maxlength="300" style="min-height:80px;"></textarea>
-                        </div>
-                        <button type="submit" class="reply-btn">📤 Odpowiedz</button>
-                    </form>
-                </div>
-            `;
-        }
-        
-        html+=`
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="review-author-section">
-                        <img src="${review.avatar}" class="user-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%237c3aed%22%3E%3Cpath d=%22M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%22/%3E%3C/svg%3E'">
-                        <div class="review-info">
-                            <div class="review-author">${review.author}</div>
-                            <div class="review-date">${review.date}</div>
-                        </div>
-                    </div>
-                    ${isAdmin?`<button class="delete-btn" onclick="deleteReview(${review.id})">🗑️ Usuń</button>`:''}
-                </div>
-                <div class="review-rating">${stars}</div>
-                <div class="review-text">${review.text}</div>
-                ${repliesHtml}
-                ${replyFormHtml}
-            </div>
-        `;
-    });
-    
-    const allReviewsHtml=html;
-    document.getElementById('all-reviews-list').innerHTML=allReviewsHtml||'<p style="color:#64748b;text-align:center;">Brak opinii. Bądź pierwszy!</p>';
-    
-    // Pokaż tylko 3 ostatnie opinie na stronie głównej
-    const lastThreeReviews=reviews.slice(-3).reverse().map(review=>{
-        const stars='⭐'.repeat(review.rating);
-        let repliesHtml='';
-        
-        if(review.replies && review.replies.length>0){
-            repliesHtml='<div class="replies-section">';
-            review.replies.forEach(reply=>{
-                repliesHtml+=`
-                    <div class="reply-card">
-                        <img src="${reply.avatar}" class="reply-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2306b6d4%22%3E%3Cpath d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z%22/%3E%3C/svg%3E'">
-                        <div class="reply-content">
-                            <div class="reply-header">
-                                <div>
-                                    <span class="reply-author">${reply.author}</span>
-                                    <span class="creator-badge">Creator</span>
-                                </div>
-                                <span class="reply-date">${reply.date}</span>
-                            </div>
-                            <div class="reply-text">${reply.text}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            repliesHtml+='</div>';
-        }
-        
-        return `
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="review-author-section">
-                        <img src="${review.avatar}" class="user-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%237c3aed%22%3E%3Cpath d=%22M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%22/%3E%3C/svg%3E'">
-                        <div class="review-info">
-                            <div class="review-author">${review.author}</div>
-                            <div class="review-date">${review.date}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-rating">${stars}</div>
-                <div class="review-text">${review.text}</div>
-                ${repliesHtml}
-            </div>
-        `;
-    }).join('');
-    
-    document.getElementById('reviews-list').innerHTML=lastThreeReviews||'<p style="color:#64748b;text-align:center;">Brak opinii. Bądź pierwszy!</p>';
+
+        cachedReviews=reviews;
+        renderReviews(reviews);
+    }catch(err){
+        console.log('Błąd pobierania opinii:', err);
+        const error='<div class="reviews-error">Nie udało się pobrać opinii. Sprawdź, czy Firestore jest włączony i ma poprawne reguły.</div>';
+        if(allReviewsList) allReviewsList.innerHTML=error;
+        if(homeReviewsList) homeReviewsList.innerHTML=error;
+    }
 }
 
-function deleteReview(id){
+function renderReviews(reviews){
+    const empty='<div class="review-empty">Brak opinii. Bądź pierwszy!</div>';
+    const allReviewsList=document.getElementById('all-reviews-list');
+    const homeReviewsList=document.getElementById('reviews-list');
+
+    if(allReviewsList){
+        allReviewsList.innerHTML=reviews.length?reviews.map(review=>renderReviewCard(review, true)).join(''):empty;
+    }
+
+    if(homeReviewsList){
+        homeReviewsList.innerHTML=reviews.length?reviews.slice(0,3).map(review=>renderReviewCard(review, false)).join(''):empty;
+    }
+}
+
+function renderReviewCard(review, allowAdminActions){
+    const isAdmin=userEmail===ADMIN_EMAIL;
+    const stars='⭐'.repeat(Math.max(1, Math.min(5, Number(review.rating)||5)));
+    const safeId=String(review.id).replace(/'/g,'\&#39;');
+    const adminControls=(allowAdminActions&&isAdmin)?`<button class="delete-btn" onclick="deleteReview('${safeId}')">Usuń</button>`:'';
+    const replyForm=(allowAdminActions&&isAdmin)?`
+        <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(124,58,237,0.2);">
+            <form onsubmit="submitReply(event, '${safeId}')">
+                <div class="form-group">
+                    <textarea id="reply-text-${safeId}" placeholder="Odpowiedź od administratora..." required maxlength="300" style="min-height:80px;"></textarea>
+                </div>
+                <button type="submit" class="reply-btn">Odpowiedz</button>
+            </form>
+        </div>
+    `:'';
+
+    return `
+        <div class="review-card">
+            <div class="review-header">
+                <div class="review-author-section">
+                    <img src="${escapeAttr(review.avatar||defaultAvatar())}" class="user-avatar" onerror="this.src='${defaultAvatar()}'">
+                    <div class="review-info">
+                        <div class="review-author">${escapeHtml(review.author)}</div>
+                        <div class="review-date">${escapeHtml(review.dateLabel||'')}</div>
+                    </div>
+                </div>
+                ${adminControls}
+            </div>
+            <div class="review-rating">${stars}</div>
+            <div class="review-text">${escapeHtml(review.text)}</div>
+            ${renderRepliesHtml(review.replies||[])}
+            ${replyForm}
+        </div>
+    `;
+}
+
+function renderRepliesHtml(replies){
+    if(!replies.length) return '';
+
+    return `<div class="replies-section">${replies.map(reply=>`
+        <div class="reply-card">
+            <img src="${escapeAttr(reply.avatar||adminAvatar())}" class="reply-avatar" onerror="this.src='${adminAvatar()}'">
+            <div class="reply-content">
+                <div class="reply-header">
+                    <div>
+                        <span class="reply-author">${escapeHtml(reply.author||'Clearnix Creator')}</span>
+                        <span class="creator-badge">Creator</span>
+                    </div>
+                    <span class="reply-date">${escapeHtml(reply.dateLabel||formatFirestoreDate(reply.createdAt))}</span>
+                </div>
+                <div class="reply-text">${escapeHtml(reply.text||'')}</div>
+            </div>
+        </div>
+    `).join('')}</div>`;
+}
+
+async function deleteReview(id){
     if(userEmail!==ADMIN_EMAIL){
         alert('Nie masz dostępu!');
         return;
     }
-    
+
+    if(!firebaseDb){
+        alert('Firestore nie jest gotowy.');
+        return;
+    }
+
     if(!confirm('Usunąć tę opinię?')) return;
-    
-    let reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
-    reviews=reviews.filter(r=>r.id!==id);
-    localStorage.setItem('reviews',JSON.stringify(reviews));
-    loadReviews();
+
+    try{
+        const reviewRef=firebaseDb.collection(REVIEWS_COLLECTION).doc(id);
+        const replies=await reviewRef.collection('replies').get();
+        const batch=firebaseDb.batch();
+        replies.forEach(reply=>batch.delete(reply.ref));
+        batch.delete(reviewRef);
+        await batch.commit();
+        await loadReviews();
+    }catch(err){
+        console.log('Błąd usuwania opinii:', err);
+        alert('Nie udało się usunąć opinii.');
+    }
 }
 
-function exportReviews(){
-    const reviews=JSON.parse(localStorage.getItem('reviews')||'[]');
-    const dataStr=JSON.stringify(reviews, null, 2);
+async function exportReviews(){
+    if(!cachedReviews.length){
+        await loadReviews();
+    }
+
+    const dataStr=JSON.stringify(cachedReviews, null, 2);
     const dataBlob=new Blob([dataStr], {type:'application/json'});
     const url=URL.createObjectURL(dataBlob);
     const link=document.createElement('a');
     link.href=url;
     link.download=`clearnix-reviews-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
+    URL.revokeObjectURL(url);
+}
+
+function escapeHtml(value){
+    return String(value||'').replace(/[&<>'"]/g,(char)=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        "'":'&#39;',
+        '"':'&quot;'
+    }[char]));
+}
+
+function escapeAttr(value){
+    return escapeHtml(value).replace(new RegExp('\x60','g'),'&#96;');
+}
+
+function formatFirestoreDate(value){
+    if(value&&typeof value.toDate==='function'){
+        return value.toDate().toLocaleDateString('pl-PL');
+    }
+    return new Date().toLocaleDateString('pl-PL');
+}
+
+function defaultAvatar(){
+    return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%237c3aed"%3E%3Cpath d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/%3E%3C/svg%3E';
+}
+
+function adminAvatar(){
+    return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2306b6d4"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/%3E%3C/svg%3E';
 }
 
 // POBIERANIE
 function startDownload(){
-    let btn=document.getElementById("download-btn");
-    let status=document.getElementById("download-status");
-    
-    btn.disabled=true;
-    status.innerText="⬇ Pobieranie...";
-    
-    let progress=0;
-    let interval=setInterval(()=>{
-        progress+=Math.random()*30;
-        if(progress>90) progress=90;
-        status.innerText=`⬇ Pobieranie... ${Math.floor(progress)}%`;
-    }, 300);
-    
-    setTimeout(()=>{
-        clearInterval(interval);
-        
-        const link=document.createElement('a');
-        link.href='/clearnix.exe';
-        link.download='Clearnix.exe';
-        
-        fetch(link.href, {method:'HEAD'})
-            .then(response=>{
-                if(response.ok){
-                    link.click();
-                    status.innerText="✅ Pobieranie ukończone! Plik zapisany.";
-                } else {
-                    status.innerText="⚠️ Plik niedostępny. Spróbuj później.";
-                    btn.disabled=false;
-                }
-            })
-            .catch(()=>{
-                link.click();
-                status.innerText="✅ Pobieranie ukończone! Plik zapisany.";
-            });
-        
-        setTimeout(()=>{
-            btn.disabled=false;
-        }, 3000);
-    }, 3000+Math.random()*2000);
+    const status=document.getElementById('download-status');
+
+    if(!DOWNLOAD_READY){
+        status.innerText=`Wersja Windows jest w budowie. Docelowy plik będzie dostępny pod: ${DOWNLOAD_URL}`;
+        return;
+    }
+
+    const link=document.createElement('a');
+    link.href=DOWNLOAD_URL;
+    link.download='Clearnix.exe';
+    link.click();
+    status.innerText='Pobieranie rozpoczęte.';
 }
 
 // NAVIGATION
@@ -2150,7 +2275,8 @@ function changeLang(lang){
 
     document.getElementById("title").innerText=t.title;
     document.getElementById("desc").innerText=t.desc;
-    document.getElementById("download-btn").innerText=t.download;
+    const downloadBtn=document.getElementById("download-btn");
+    downloadBtn.innerText=DOWNLOAD_READY?t.download:'🎮 Wersja Windows w budowie';
     document.getElementById("how-title").innerText=t.how;
     document.getElementById("c1").innerText=t.c1;
     document.getElementById("c2").innerText=t.c2;
