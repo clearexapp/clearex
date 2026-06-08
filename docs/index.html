@@ -1384,6 +1384,19 @@ function initializeFirebase(){
                 applyGoogleUser(user);
             }
         });
+
+        firebaseAuth.getRedirectResult()
+            .then((result)=>{
+                if(result&&result.user){
+                    applyGoogleUser(result.user);
+                    closeAuthModal();
+                    showReviewForm();
+                    loadReviews();
+                }
+            })
+            .catch((err)=>{
+                showAuthError(err);
+            });
     }catch(err){
         console.log('Błąd inicjalizacji Firebase:', err);
     }
@@ -1405,48 +1418,64 @@ function initializeGoogleAuth(){
     }
 }
 
-function signInWithGoogle(){
-    const loginError=document.getElementById('login-error');
-    const registerError=document.getElementById('register-error');
-    if(loginError){
-        loginError.innerText='';
-        loginError.style.display='none';
-    }
-    if(registerError){
-        registerError.innerText='';
-        registerError.style.display='none';
-    }
+async function signInWithGoogle(){
+    clearAuthErrors();
 
     if(!firebaseAuth){
-        if(loginError){
-            loginError.innerText='Firebase Auth nie jest gotowy. Odśwież stronę i spróbuj ponownie.';
-            loginError.style.display='block';
-        }
+        showAuthError({message:'Firebase Auth nie jest gotowy. Odśwież stronę i spróbuj ponownie.'});
         return;
     }
 
     const provider=new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({prompt:'select_account'});
 
-    firebaseAuth.signInWithPopup(provider)
-        .then((result)=>{
-            applyGoogleUser(result.user);
-            closeAuthModal();
-            showReviewForm();
-            loadReviews();
-        })
-        .catch((err)=>{
-            console.log('Błąd logowania Google:', err);
-            const msg='Nie udało się zalogować przez Google. Spróbuj ponownie.';
-            if(loginError){
-                loginError.innerText=msg;
-                loginError.style.display='block';
+    try{
+        const result=await firebaseAuth.signInWithPopup(provider);
+        applyGoogleUser(result.user);
+        closeAuthModal();
+        showReviewForm();
+        loadReviews();
+    }catch(err){
+        console.log('Błąd logowania Google popup:', err);
+        if(err&&['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(err.code)){
+            try{
+                await firebaseAuth.signInWithRedirect(provider);
+                return;
+            }catch(redirectErr){
+                console.log('Błąd logowania Google redirect:', redirectErr);
+                showAuthError(redirectErr);
+                return;
             }
-            if(registerError){
-                registerError.innerText=msg;
-                registerError.style.display='block';
-            }
-        });
+        }
+        showAuthError(err);
+    }
+}
+
+function clearAuthErrors(){
+    ['login-error','register-error'].forEach((id)=>{
+        const el=document.getElementById(id);
+        if(el){
+            el.innerText='';
+            el.style.display='none';
+        }
+    });
+}
+
+function showAuthError(err){
+    console.log('Błąd autoryzacji:', err);
+    let msg='Nie udało się zalogować przez Google. Spróbuj ponownie.';
+    if(err&&err.code==='auth/unauthorized-domain'){
+        msg='Google logowanie wymaga dodania domeny clearnixapp.github.io w Firebase Auth > Settings > Authorized domains.';
+    }else if(err&&err.message){
+        msg=err.message;
+    }
+    ['login-error','register-error'].forEach((id)=>{
+        const el=document.getElementById(id);
+        if(el){
+            el.innerText=msg;
+            el.style.display='block';
+        }
+    });
 }
 
 function applyGoogleUser(user){
@@ -1773,7 +1802,7 @@ async function loadReviews(){
     }
 
     try{
-        const snapshot=await firebaseDb.ref(REVIEWS_PATH).orderByChild('createdAt').get();
+        const snapshot=await firebaseDb.ref(REVIEWS_PATH).get();
         const reviews=[];
 
         snapshot.forEach((child)=>{
