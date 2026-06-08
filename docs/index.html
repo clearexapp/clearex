@@ -1186,15 +1186,15 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
             <p id="desc">Zwiększ FPS, usuń lagi i przyspiesz system.</p>
 
             <div class="download-panel">
-                <button class="download-btn is-disabled" onclick="startDownload()" id="download-btn" type="button" aria-describedby="download-status">
-                    🎮 Wersja Windows w budowie
+                <button class="download-btn" onclick="startDownload()" id="download-btn" type="button" aria-describedby="download-status">
+⬇ Pobierz Clearnix
                 </button>
                 <div class="download-meta" aria-hidden="true">
                     <span>Windows .exe</span>
                     <span>Cloud ready</span>
                     <span>Coming soon</span>
                 </div>
-                <div id="download-status">Plik Clearnix.exe jest w trakcie budowania.</div>
+                <div id="download-status">Pobieranie działa z darmowego GitHub Pages po dodaniu pliku .exe.</div>
             </div>
         </div>
     </section>
@@ -1311,7 +1311,7 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
 <script>
@@ -1324,13 +1324,13 @@ const ADMIN_EMAIL='clearnixapp@gmail.com';
 let firebaseAuth=null;
 let firebaseDb=null;
 let cachedReviews=[];
-const REVIEWS_COLLECTION='reviews';
+const REVIEWS_PATH='reviews';
 const DOWNLOAD_URL='/clearnix/downloads/Clearnix.exe';
-const DOWNLOAD_READY=false;
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUC305L4VXS2w5RryCgODKBFUPbCJEV5c",
   authDomain: "clearnixweb.firebaseapp.com",
+  databaseURL: "https://clearnixweb-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "clearnixweb",
   storageBucket: "clearnixweb.firebasestorage.app",
   messagingSenderId: "138357864836",
@@ -1372,7 +1372,7 @@ function initializeFirebase(){
             firebase.initializeApp(firebaseConfig);
         }
         firebaseAuth=firebase.auth();
-        firebaseDb=firebase.firestore();
+        firebaseDb=firebase.database();
         try{
             firebase.analytics();
         }catch(analyticsErr){
@@ -1681,7 +1681,7 @@ async function submitReview(e){
     }
 
     const uid=firebaseAuth.currentUser.uid;
-    const reviewRef=firebaseDb.collection(REVIEWS_COLLECTION).doc(uid);
+    const reviewRef=firebaseDb.ref(REVIEWS_PATH).child(uid);
     const submitBtn=document.getElementById('submit-btn');
 
     if(submitBtn){
@@ -1691,7 +1691,7 @@ async function submitReview(e){
 
     try{
         const existing=await reviewRef.get();
-        if(existing.exists){
+        if(existing.exists()){
             alert('Już dodałeś opinię! Każdy użytkownik może dodać max. 1 opinię.');
             return;
         }
@@ -1704,9 +1704,10 @@ async function submitReview(e){
             avatar:userAvatar,
             rating:parseInt(rating,10),
             text:opinion,
-            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt:firebase.database.ServerValue.TIMESTAMP,
             dateLabel:now.toLocaleDateString('pl-PL'),
-            approved:true
+            approved:true,
+            replies:{}
         });
 
         alert('Opinia zapisana. Dziękuję za opinię!');
@@ -1716,7 +1717,7 @@ async function submitReview(e){
         await loadReviews();
     }catch(err){
         console.log('Błąd zapisywania opinii:', err);
-        alert('Nie udało się zapisać opinii. Sprawdź reguły Firestore i spróbuj ponownie.');
+        alert('Nie udało się zapisać opinii. Sprawdź reguły Realtime Database i spróbuj ponownie.');
     }finally{
         if(submitBtn){
             submitBtn.disabled=false;
@@ -1734,7 +1735,7 @@ async function submitReply(e,reviewId){
     }
 
     if(!firebaseDb){
-        alert('Firestore nie jest gotowy. Odśwież stronę i spróbuj ponownie.');
+        alert('Realtime Database nie jest gotowa. Odśwież stronę i spróbuj ponownie.');
         return;
     }
 
@@ -1745,11 +1746,11 @@ async function submitReply(e,reviewId){
     }
 
     try{
-        await firebaseDb.collection(REVIEWS_COLLECTION).doc(reviewId).collection('replies').add({
+        await firebaseDb.ref(REVIEWS_PATH).child(reviewId).child('replies').push({
             author:'Clearnix Creator',
             avatar:adminAvatar(),
             text:replyText,
-            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt:firebase.database.ServerValue.TIMESTAMP,
             dateLabel:new Date().toLocaleDateString('pl-PL')
         });
         await loadReviews();
@@ -1772,38 +1773,38 @@ async function loadReviews(){
     }
 
     try{
-        const snapshot=await firebaseDb.collection(REVIEWS_COLLECTION).orderBy('createdAt','desc').get();
+        const snapshot=await firebaseDb.ref(REVIEWS_PATH).orderByChild('createdAt').get();
         const reviews=[];
 
-        for(const doc of snapshot.docs){
-            const data=doc.data();
-            if(data.approved===false) continue;
+        snapshot.forEach((child)=>{
+            const data=child.val()||{};
+            if(data.approved===false) return;
 
-            const repliesSnapshot=await firebaseDb.collection(REVIEWS_COLLECTION).doc(doc.id).collection('replies').orderBy('createdAt','asc').get();
-            const replies=repliesSnapshot.docs.map(replyDoc=>({
-                id:replyDoc.id,
-                ...replyDoc.data()
-            }));
+            const replies=Object.entries(data.replies||{}).map(([id, reply])=>({
+                id,
+                ...(reply||{})
+            })).sort((a,b)=>(Number(a.createdAt)||0)-(Number(b.createdAt)||0));
 
             reviews.push({
-                id:doc.id,
-                uid:data.uid||doc.id,
+                id:child.key,
+                uid:data.uid||child.key,
                 author:data.author||'Użytkownik',
                 email:data.email||'',
                 avatar:data.avatar||defaultAvatar(),
                 rating:Number(data.rating)||5,
                 text:data.text||'',
-                dateLabel:data.dateLabel||formatFirestoreDate(data.createdAt),
-                createdAt:data.createdAt||null,
+                dateLabel:data.dateLabel||formatRealtimeDate(data.createdAt),
+                createdAt:data.createdAt||0,
                 replies
             });
-        }
+        });
 
+        reviews.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
         cachedReviews=reviews;
         renderReviews(reviews);
     }catch(err){
         console.log('Błąd pobierania opinii:', err);
-        const error='<div class="reviews-error">Nie udało się pobrać opinii. Sprawdź, czy Firestore jest włączony i ma poprawne reguły.</div>';
+        const error='<div class="reviews-error">Nie udało się pobrać opinii. Sprawdź, czy Realtime Database ma poprawne reguły.</div>';
         if(allReviewsList) allReviewsList.innerHTML=error;
         if(homeReviewsList) homeReviewsList.innerHTML=error;
     }
@@ -1871,7 +1872,7 @@ function renderRepliesHtml(replies){
                         <span class="reply-author">${escapeHtml(reply.author||'Clearnix Creator')}</span>
                         <span class="creator-badge">Creator</span>
                     </div>
-                    <span class="reply-date">${escapeHtml(reply.dateLabel||formatFirestoreDate(reply.createdAt))}</span>
+                    <span class="reply-date">${escapeHtml(reply.dateLabel||formatRealtimeDate(reply.createdAt))}</span>
                 </div>
                 <div class="reply-text">${escapeHtml(reply.text||'')}</div>
             </div>
@@ -1886,19 +1887,14 @@ async function deleteReview(id){
     }
 
     if(!firebaseDb){
-        alert('Firestore nie jest gotowy.');
+        alert('Realtime Database nie jest gotowa.');
         return;
     }
 
     if(!confirm('Usunąć tę opinię?')) return;
 
     try{
-        const reviewRef=firebaseDb.collection(REVIEWS_COLLECTION).doc(id);
-        const replies=await reviewRef.collection('replies').get();
-        const batch=firebaseDb.batch();
-        replies.forEach(reply=>batch.delete(reply.ref));
-        batch.delete(reviewRef);
-        await batch.commit();
+        await firebaseDb.ref(REVIEWS_PATH).child(id).remove();
         await loadReviews();
     }catch(err){
         console.log('Błąd usuwania opinii:', err);
@@ -1935,9 +1931,9 @@ function escapeAttr(value){
     return escapeHtml(value).replace(new RegExp('\x60','g'),'&#96;');
 }
 
-function formatFirestoreDate(value){
-    if(value&&typeof value.toDate==='function'){
-        return value.toDate().toLocaleDateString('pl-PL');
+function formatRealtimeDate(value){
+    if(value){
+        return new Date(Number(value)).toLocaleDateString('pl-PL');
     }
     return new Date().toLocaleDateString('pl-PL');
 }
@@ -1951,19 +1947,35 @@ function adminAvatar(){
 }
 
 // POBIERANIE
-function startDownload(){
+async function startDownload(){
+    const btn=document.getElementById('download-btn');
     const status=document.getElementById('download-status');
+    const originalText=btn.innerText;
 
-    if(!DOWNLOAD_READY){
-        status.innerText=`Wersja Windows jest w budowie. Docelowy plik będzie dostępny pod: ${DOWNLOAD_URL}`;
-        return;
+    btn.disabled=true;
+    status.innerText='Sprawdzam plik aplikacji...';
+
+    try{
+        const response=await fetch(DOWNLOAD_URL, {method:'HEAD', cache:'no-store'});
+        if(!response.ok){
+            throw new Error('missing-file');
+        }
+
+        const link=document.createElement('a');
+        link.href=DOWNLOAD_URL;
+        link.download='Clearnix.exe';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        status.innerText='Pobieranie rozpoczęte.';
+    }catch(err){
+        status.innerText='Plik .exe nie jest jeszcze wgrany. Dodaj go za darmo do docs/downloads/Clearnix.exe w GitHubie.';
+    }finally{
+        setTimeout(()=>{
+            btn.disabled=false;
+            btn.innerText=originalText;
+        }, 1200);
     }
-
-    const link=document.createElement('a');
-    link.href=DOWNLOAD_URL;
-    link.download='Clearnix.exe';
-    link.click();
-    status.innerText='Pobieranie rozpoczęte.';
 }
 
 // NAVIGATION
@@ -2276,7 +2288,7 @@ function changeLang(lang){
     document.getElementById("title").innerText=t.title;
     document.getElementById("desc").innerText=t.desc;
     const downloadBtn=document.getElementById("download-btn");
-    downloadBtn.innerText=DOWNLOAD_READY?t.download:'🎮 Wersja Windows w budowie';
+    downloadBtn.innerText=t.download;
     document.getElementById("how-title").innerText=t.how;
     document.getElementById("c1").innerText=t.c1;
     document.getElementById("c2").innerText=t.c2;
