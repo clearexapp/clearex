@@ -1058,6 +1058,19 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
     opacity:0.92;
 }
 
+.security-section{padding:120px 20px;position:relative;z-index:5;overflow:hidden;}
+.security-shell{max-width:1100px;margin:0 auto;position:relative;padding:56px;border:1px solid rgba(6,182,212,0.32);border-radius:18px;background:linear-gradient(135deg, rgba(8,12,24,0.76), rgba(124,58,237,0.16));box-shadow:0 0 45px rgba(6,182,212,0.12), inset 0 0 34px rgba(124,58,237,0.09);backdrop-filter:blur(18px);}
+.security-pulse{position:absolute;inset:18px;border:1px solid rgba(6,182,212,0.28);border-radius:14px;animation:security-scan 3.2s ease-in-out infinite;pointer-events:none;}
+@keyframes security-scan{0%,100%{opacity:0.28;transform:scale(0.985);box-shadow:0 0 0 rgba(6,182,212,0);}50%{opacity:0.9;transform:scale(1);box-shadow:0 0 28px rgba(6,182,212,0.22);}}
+.security-kicker{color:#06b6d4;font-family:'Rajdhani','Inter',sans-serif;font-size:16px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:16px;}
+.security-shell h2{font-size:48px;margin-bottom:18px;background:linear-gradient(135deg,#ffffff 0%,#06b6d4 45%,#ec4899 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.security-shell>p:not(.security-kicker){color:#cbd5e1;max-width:760px;font-size:18px;line-height:1.7;margin-bottom:34px;}
+.security-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.security-card{padding:24px;border:1px solid rgba(124,58,237,0.28);border-radius:14px;background:rgba(0,0,0,0.28);transition:all 0.3s ease;}
+.security-card:hover{transform:translateY(-6px);border-color:#06b6d4;box-shadow:0 18px 34px rgba(6,182,212,0.12);}
+.security-icon{display:inline-flex;margin-bottom:16px;font-size:28px;}.security-card h3{font-size:22px;margin-bottom:10px;color:#fff;}.security-card p{color:#94a3b8;line-height:1.6;}
+.edit-review-panel{display:none;margin-top:18px;padding-top:18px;border-top:1px solid rgba(124,58,237,0.24);}.edit-review-panel.show{display:block;}
+@media(max-width:768px){.security-shell{padding:34px 22px;}.security-shell h2{font-size:34px;}.security-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 
@@ -1157,6 +1170,7 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 
     <div class="nav-right">
         <a href="#" onclick="goToHome(); return false;" id="nav-home">Home</a>
+        <a href="#" onclick="goToSecurity(); return false;" id="nav-security">Bezpieczeństwo</a>
         <a href="#" onclick="goToReviews(); return false;" id="nav-reviews">Reviews</a>
 
         <div id="user-profile" style="display:none;color:#7c3aed;font-weight:700;display:flex;align-items:center;gap:15px;">
@@ -1190,9 +1204,9 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 ⬇ Pobierz Clearnix
                 </button>
                 <div class="download-meta" aria-hidden="true">
-                    <span>Windows .exe</span>
-                    <span>Cloud ready</span>
-                    <span>Coming soon</span>
+                    <span id="download-meta-platform">Windows .exe</span>
+                    <span id="download-meta-cloud">Cloud ready</span>
+                    <span id="download-meta-status">Coming soon</span>
                 </div>
                 <div id="download-status">Pobieranie działa z darmowego GitHub Pages po dodaniu pliku .exe.</div>
             </div>
@@ -1212,6 +1226,21 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
             </div>
             <div class="card" onclick="goToFeature('cache')">
                 <div class="card-content" id="c3">🧹 Czyści niepotrzebne pliki</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section class="security-section" id="security">
+        <div class="security-shell">
+            <div class="security-pulse" aria-hidden="true"></div>
+            <p class="security-kicker" id="security-kicker">Bezpieczeństwo</p>
+            <h2 id="security-title">Bezpieczna optymalizacja bez chaosu</h2>
+            <p id="security-desc">Clearnix pomaga przyspieszać system w kontrolowany sposób: opinie zapisują się w darmowej bazie, a aplikacja będzie pobierana bez płatnego storage.</p>
+            <div class="security-grid">
+                <div class="security-card"><span class="security-icon">???</span><h3 id="security-card-1-title">Kontrola użytkownika</h3><p id="security-card-1-desc">Możesz dodać, edytować albo usunąć swoją opinię w dowolnym momencie.</p></div>
+                <div class="security-card"><span class="security-icon">??</span><h3 id="security-card-2-title">Logowanie Firebase</h3><p id="security-card-2-desc">Opinia jest powiązana z Twoim kontem, więc nikt inny nie może jej zmienić.</p></div>
+                <div class="security-card"><span class="security-icon">??</span><h3 id="security-card-3-title">Czysty download</h3><p id="security-card-3-desc">Plik aplikacji będzie pobierany prosto z GitHub Pages, za darmo i bez Firebase Storage.</p></div>
             </div>
         </div>
     </section>
@@ -1692,12 +1721,12 @@ async function submitReview(e){
     e.preventDefault();
 
     if(!currentUser || !userEmail || !firebaseAuth || !firebaseAuth.currentUser){
-        alert('Musisz się zalogować!');
+        alert(tText('login-required-alert'));
         return;
     }
 
     if(!firebaseDb){
-        alert('Opinie w chmurze nie są jeszcze gotowe. Odśwież stronę i spróbuj ponownie.');
+        alert(tText('database-not-ready'));
         return;
     }
 
@@ -1705,7 +1734,7 @@ async function submitReview(e){
     const opinion=document.getElementById('opinion').value.trim();
 
     if(!rating || !opinion){
-        alert('Wypełnij wszystkie pola!');
+        alert(tText('fill-fields-alert'));
         return;
     }
 
@@ -1721,7 +1750,7 @@ async function submitReview(e){
     try{
         const existing=await reviewRef.get();
         if(existing.exists()){
-            alert('Już dodałeś opinię! Każdy użytkownik może dodać max. 1 opinię.');
+            alert(tText('duplicate-review-alert'));
             return;
         }
 
@@ -1739,14 +1768,14 @@ async function submitReview(e){
             replies:{}
         });
 
-        alert('Opinia zapisana. Dziękuję za opinię!');
+        alert(tText('review-saved-alert'));
         document.getElementById('rating').value='';
         document.getElementById('opinion').value='';
         document.getElementById('char-count').innerText='0/500';
         await loadReviews();
     }catch(err){
         console.log('Błąd zapisywania opinii:', err);
-        alert('Nie udało się zapisać opinii. Sprawdź reguły Realtime Database i spróbuj ponownie.');
+        alert(tText('review-save-failed-alert'));
     }finally{
         if(submitBtn){
             submitBtn.disabled=false;
@@ -1759,18 +1788,18 @@ async function submitReply(e,reviewId){
     e.preventDefault();
 
     if(userEmail!==ADMIN_EMAIL){
-        alert('Tylko admin może odpowiadać!');
+        alert(tText('admin-only-alert'));
         return;
     }
 
     if(!firebaseDb){
-        alert('Realtime Database nie jest gotowa. Odśwież stronę i spróbuj ponownie.');
+        alert(tText('database-not-ready'));
         return;
     }
 
     const replyText=document.getElementById(`reply-text-${reviewId}`).value.trim();
     if(!replyText){
-        alert('Wpisz odpowiedź!');
+        alert(tText('reply-empty-alert'));
         return;
     }
 
@@ -1785,14 +1814,14 @@ async function submitReply(e,reviewId){
         await loadReviews();
     }catch(err){
         console.log('Błąd zapisywania odpowiedzi:', err);
-        alert('Nie udało się zapisać odpowiedzi.');
+        alert(tText('reply-failed-alert'));
     }
 }
 
 async function loadReviews(){
     const allReviewsList=document.getElementById('all-reviews-list');
     const homeReviewsList=document.getElementById('reviews-list');
-    const loading='<div class="reviews-loading">Ładowanie opinii...</div>';
+    const loading=`<div class="reviews-loading">${escapeHtml(tText('loading-reviews'))}</div>`;
 
     if(allReviewsList) allReviewsList.innerHTML=loading;
     if(homeReviewsList) homeReviewsList.innerHTML=loading;
@@ -1824,6 +1853,7 @@ async function loadReviews(){
                 text:data.text||'',
                 dateLabel:data.dateLabel||formatRealtimeDate(data.createdAt),
                 createdAt:data.createdAt||0,
+                updatedAt:data.updatedAt||0,
                 replies
             });
         });
@@ -1833,14 +1863,14 @@ async function loadReviews(){
         renderReviews(reviews);
     }catch(err){
         console.log('Błąd pobierania opinii:', err);
-        const error='<div class="reviews-error">Nie udało się pobrać opinii. Sprawdź, czy Realtime Database ma poprawne reguły.</div>';
+        const error=`<div class="reviews-error">${escapeHtml(tText('reviews-error'))}</div>`;
         if(allReviewsList) allReviewsList.innerHTML=error;
         if(homeReviewsList) homeReviewsList.innerHTML=error;
     }
 }
 
 function renderReviews(reviews){
-    const empty='<div class="review-empty">Brak opinii. Bądź pierwszy!</div>';
+    const empty=`<div class="review-empty">${escapeHtml(tText('empty-reviews'))}</div>`;
     const allReviewsList=document.getElementById('all-reviews-list');
     const homeReviewsList=document.getElementById('reviews-list');
 
@@ -1855,16 +1885,41 @@ function renderReviews(reviews){
 
 function renderReviewCard(review, allowAdminActions){
     const isAdmin=userEmail===ADMIN_EMAIL;
-    const stars='⭐'.repeat(Math.max(1, Math.min(5, Number(review.rating)||5)));
+    const isOwner=firebaseAuth&&firebaseAuth.currentUser&&firebaseAuth.currentUser.uid===review.id;
+    const canManage=allowAdminActions&&(isAdmin||isOwner);
+    const stars='?'.repeat(Math.max(1, Math.min(5, Number(review.rating)||5)));
     const safeId=String(review.id).replace(/'/g,'\&#39;');
-    const adminControls=(allowAdminActions&&isAdmin)?`<button class="delete-btn" onclick="deleteReview('${safeId}')">Usuń</button>`:'';
+    const ownerActions=canManage?`
+        <div class="review-actions">
+            ${isOwner?`<button class="reply-btn" onclick="startEditReview('${safeId}')">${escapeHtml(tText('edit-review'))}</button>`:''}
+            <button class="delete-btn" onclick="deleteReview('${safeId}')">${escapeHtml(tText('delete-review'))}</button>
+        </div>
+    `:'';
     const replyForm=(allowAdminActions&&isAdmin)?`
         <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(124,58,237,0.2);">
             <form onsubmit="submitReply(event, '${safeId}')">
                 <div class="form-group">
-                    <textarea id="reply-text-${safeId}" placeholder="Odpowiedź od administratora..." required maxlength="300" style="min-height:80px;"></textarea>
+                    <textarea id="reply-text-${safeId}" placeholder="${escapeAttr(tText('admin-reply-placeholder'))}" required maxlength="300" style="min-height:80px;"></textarea>
                 </div>
-                <button type="submit" class="reply-btn">Odpowiedz</button>
+                <button type="submit" class="reply-btn">${escapeHtml(tText('reply-review'))}</button>
+            </form>
+        </div>
+    `:'';
+    const editPanel=isOwner?`
+        <div class="edit-review-panel" id="edit-panel-${safeId}">
+            <form onsubmit="saveEditedReview(event, '${safeId}')">
+                <div class="form-group">
+                    <label>${escapeHtml(tText('rating-label'))}</label>
+                    <select id="edit-rating-${safeId}" required>
+                        ${[5,4,3,2,1].map(value=>`<option value="${value}" ${Number(review.rating)===value?'selected':''}>${'?'.repeat(value)}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>${escapeHtml(tText('opinion-label'))}</label>
+                    <textarea id="edit-text-${safeId}" required maxlength="500">${escapeHtml(review.text)}</textarea>
+                </div>
+                <button type="submit" class="reply-btn">${escapeHtml(tText('save-review'))}</button>
+                <button type="button" class="delete-btn" onclick="cancelEditReview('${safeId}')">${escapeHtml(tText('cancel-edit'))}</button>
             </form>
         </div>
     `:'';
@@ -1876,13 +1931,14 @@ function renderReviewCard(review, allowAdminActions){
                     <img src="${escapeAttr(review.avatar||defaultAvatar())}" class="user-avatar" onerror="this.src='${defaultAvatar()}'">
                     <div class="review-info">
                         <div class="review-author">${escapeHtml(review.author)}</div>
-                        <div class="review-date">${escapeHtml(review.dateLabel||'')}</div>
+                        <div class="review-date">${escapeHtml(review.dateLabel||'')}${review.updatedAt?' · '+escapeHtml(tText('edited-label')):''}</div>
                     </div>
                 </div>
-                ${adminControls}
+                ${ownerActions}
             </div>
             <div class="review-rating">${stars}</div>
             <div class="review-text">${escapeHtml(review.text)}</div>
+            ${editPanel}
             ${renderRepliesHtml(review.replies||[])}
             ${replyForm}
         </div>
@@ -1909,26 +1965,37 @@ function renderRepliesHtml(replies){
     `).join('')}</div>`;
 }
 
-async function deleteReview(id){
-    if(userEmail!==ADMIN_EMAIL){
-        alert('Nie masz dostępu!');
-        return;
-    }
+function startEditReview(id){
+    const panel=document.getElementById(`edit-panel-${id}`);
+    if(panel) panel.classList.add('show');
+}
 
-    if(!firebaseDb){
-        alert('Realtime Database nie jest gotowa.');
-        return;
-    }
+function cancelEditReview(id){
+    const panel=document.getElementById(`edit-panel-${id}`);
+    if(panel) panel.classList.remove('show');
+}
 
-    if(!confirm('Usunąć tę opinię?')) return;
-
+async function saveEditedReview(e,id){
+    e.preventDefault();
+    if(!firebaseAuth||!firebaseAuth.currentUser||firebaseAuth.currentUser.uid!==id){alert(tText('owner-only-alert'));return;}
+    if(!firebaseDb){alert(tText('database-not-ready'));return;}
+    const rating=document.getElementById(`edit-rating-${id}`).value;
+    const text=document.getElementById(`edit-text-${id}`).value.trim();
+    if(!rating||!text){alert(tText('fill-fields-alert'));return;}
     try{
-        await firebaseDb.ref(REVIEWS_PATH).child(id).remove();
+        await firebaseDb.ref(REVIEWS_PATH).child(id).update({rating:parseInt(rating,10),text,updatedAt:firebase.database.ServerValue.TIMESTAMP,dateLabel:new Date().toLocaleDateString('pl-PL')});
         await loadReviews();
-    }catch(err){
-        console.log('Błąd usuwania opinii:', err);
-        alert('Nie udało się usunąć opinii.');
-    }
+    }catch(err){console.log('B??d edycji opinii:', err);alert(tText('edit-failed-alert'));}
+}
+
+async function deleteReview(id){
+    const isAdmin=userEmail===ADMIN_EMAIL;
+    const isOwner=firebaseAuth&&firebaseAuth.currentUser&&firebaseAuth.currentUser.uid===id;
+    if(!isAdmin&&!isOwner){alert(tText('no-access-alert'));return;}
+    if(!firebaseDb){alert(tText('database-not-ready'));return;}
+    if(!confirm(tText('delete-confirm'))) return;
+    try{await firebaseDb.ref(REVIEWS_PATH).child(id).remove();await loadReviews();}
+    catch(err){console.log('B??d usuwania opinii:', err);alert(tText('delete-failed-alert'));}
 }
 
 async function exportReviews(){
@@ -1982,7 +2049,7 @@ async function startDownload(){
     const originalText=btn.innerText;
 
     btn.disabled=true;
-    status.innerText='Sprawdzam plik aplikacji...';
+    status.innerText=tText('downloadChecking');
 
     try{
         const response=await fetch(DOWNLOAD_URL, {method:'HEAD', cache:'no-store'});
@@ -1996,9 +2063,9 @@ async function startDownload(){
         document.body.appendChild(link);
         link.click();
         link.remove();
-        status.innerText='Pobieranie rozpoczęte.';
+        status.innerText=tText('downloadStarted');
     }catch(err){
-        status.innerText='Plik .exe nie jest jeszcze wgrany. Dodaj go za darmo do docs/downloads/Clearnix.exe w GitHubie.';
+        status.innerText=tText('downloadMissing');
     }finally{
         setTimeout(()=>{
             btn.disabled=false;
@@ -2013,6 +2080,12 @@ function goToHome(){
     document.getElementById('home-page').classList.add('active');
     loadReviews();
     window.scrollTo(0,0);
+}
+
+function goToSecurity(){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('home-page').classList.add('active');
+    document.getElementById('security').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function goToReviews(){
@@ -2310,6 +2383,17 @@ support:"Apóyanos",
 }
 };
 
+const extraTranslations={
+pl:{'nav-security':'Bezpieczeństwo',downloadStatus:'Pobieranie działa z darmowego GitHub Pages po dodaniu pliku .exe.',downloadChecking:'Sprawdzam plik aplikacji...',downloadStarted:'Pobieranie rozpoczęte.',downloadMissing:'Plik .exe nie jest jeszcze wgrany. Dodaj go za darmo do docs/downloads/Clearnix.exe w GitHubie.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Darmowa chmura',downloadMetaStatus:'Gotowe na plik','security-kicker':'Bezpieczeństwo','security-title':'Bezpieczna optymalizacja bez chaosu','security-desc':'Clearnix pomaga przyspieszać system w kontrolowany sposób: opinie zapisują się w darmowej bazie, a aplikacja będzie pobierana bez płatnego storage.','security-card-1-title':'Kontrola użytkownika','security-card-1-desc':'Możesz dodać, edytować albo usunąć swoją opinię w dowolnym momencie.','security-card-2-title':'Logowanie Firebase','security-card-2-desc':'Opinia jest powiązana z Twoim kontem, więc nikt inny nie może jej zmienić.','security-card-3-title':'Czysty download','security-card-3-desc':'Plik aplikacji będzie pobierany prosto z GitHub Pages, za darmo i bez Firebase Storage.','edit-review':'Edytuj','delete-review':'Usuń','save-review':'Zapisz','cancel-edit':'Anuluj','reply-review':'Odpowiedz','admin-reply-placeholder':'Odpowiedź od administratora...','edited-label':'edytowano','loading-reviews':'Ładowanie opinii...','empty-reviews':'Brak opinii. Bądź pierwszy!','reviews-error':'Nie udało się pobrać opinii. Sprawdź, czy Realtime Database ma poprawne reguły.','login-required-alert':'Musisz się zalogować!','database-not-ready':'Realtime Database nie jest gotowa. Odśwież stronę i spróbuj ponownie.','fill-fields-alert':'Wypełnij wszystkie pola!','duplicate-review-alert':'Już dodałeś opinię! Każdy użytkownik może dodać max. 1 opinię.','review-saved-alert':'Opinia zapisana. Dziękuję za opinię!','review-save-failed-alert':'Nie udało się zapisać opinii. Sprawdź reguły Realtime Database i spróbuj ponownie.','admin-only-alert':'Tylko admin może odpowiadać!','reply-empty-alert':'Wpisz odpowiedź!','reply-failed-alert':'Nie udało się zapisać odpowiedzi.','owner-only-alert':'Możesz edytować tylko swoją opinię.','edit-failed-alert':'Nie udało się edytować opinii.','no-access-alert':'Nie masz dostępu!','delete-confirm':'Usunąć tę opinię?','delete-failed-alert':'Nie udało się usunąć opinii.'},
+en:{'nav-security':'Security',downloadStatus:'Download works with free GitHub Pages after the .exe file is added.',downloadChecking:'Checking the app file...',downloadStarted:'Download started.',downloadMissing:'The .exe file is not uploaded yet. Add it for free to docs/downloads/Clearnix.exe on GitHub.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Free cloud',downloadMetaStatus:'Ready for file','security-kicker':'Security','security-title':'Safe optimization without chaos','security-desc':'Clearnix helps speed up the system in a controlled way: reviews use a free database and the app downloads without paid storage.','security-card-1-title':'User control','security-card-1-desc':'You can add, edit, or delete your own review at any time.','security-card-2-title':'Firebase login','security-card-2-desc':'Your review is tied to your account, so nobody else can change it.','security-card-3-title':'Clean download','security-card-3-desc':'The app file will download directly from GitHub Pages, free and without Firebase Storage.','edit-review':'Edit','delete-review':'Delete','save-review':'Save','cancel-edit':'Cancel','reply-review':'Reply','admin-reply-placeholder':'Admin reply...','edited-label':'edited','loading-reviews':'Loading reviews...','empty-reviews':'No reviews yet. Be first!','reviews-error':'Could not load reviews. Check Realtime Database rules.','login-required-alert':'You must sign in!','database-not-ready':'Realtime Database is not ready. Refresh and try again.','fill-fields-alert':'Fill in all fields!','duplicate-review-alert':'You already added a review. Each user can add one review.','review-saved-alert':'Review saved. Thank you!','review-save-failed-alert':'Could not save the review. Check Realtime Database rules and try again.','admin-only-alert':'Only admin can reply!','reply-empty-alert':'Write a reply!','reply-failed-alert':'Could not save the reply.','owner-only-alert':'You can edit only your own review.','edit-failed-alert':'Could not edit the review.','no-access-alert':'You do not have access!','delete-confirm':'Delete this review?','delete-failed-alert':'Could not delete the review.'},
+de:{'nav-security':'Sicherheit',downloadStatus:'Der Download funktioniert kostenlos über GitHub Pages, sobald die .exe-Datei hinzugefügt wurde.',downloadChecking:'App-Datei wird geprüft...',downloadStarted:'Download gestartet.',downloadMissing:'Die .exe-Datei wurde noch nicht hochgeladen. Füge sie kostenlos unter docs/downloads/Clearnix.exe auf GitHub hinzu.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Kostenlose Cloud',downloadMetaStatus:'Bereit für Datei','security-kicker':'Sicherheit','security-title':'Sichere Optimierung ohne Chaos','security-desc':'Clearnix beschleunigt dein System kontrolliert: Bewertungen nutzen eine kostenlose Datenbank und Downloads funktionieren ohne bezahlten Storage.','security-card-1-title':'Benutzerkontrolle','security-card-1-desc':'Du kannst deine Bewertung jederzeit hinzufügen, bearbeiten oder löschen.','security-card-2-title':'Firebase-Anmeldung','security-card-2-desc':'Deine Bewertung ist mit deinem Konto verbunden, daher kann niemand anders sie ändern.','security-card-3-title':'Sauberer Download','security-card-3-desc':'Die App-Datei wird direkt von GitHub Pages heruntergeladen, kostenlos und ohne Firebase Storage.','edit-review':'Bearbeiten','delete-review':'Löschen','save-review':'Speichern','cancel-edit':'Abbrechen','reply-review':'Antworten','admin-reply-placeholder':'Admin-Antwort...','edited-label':'bearbeitet','loading-reviews':'Bewertungen werden geladen...','empty-reviews':'Noch keine Bewertungen. Sei der Erste!','reviews-error':'Bewertungen konnten nicht geladen werden. Prüfe die Realtime-Database-Regeln.','login-required-alert':'Du musst angemeldet sein!','database-not-ready':'Realtime Database ist nicht bereit. Aktualisiere die Seite und versuche es erneut.','fill-fields-alert':'Fülle alle Felder aus!','duplicate-review-alert':'Du hast bereits eine Bewertung hinzugefügt. Jeder Nutzer kann eine Bewertung schreiben.','review-saved-alert':'Bewertung gespeichert. Danke!','review-save-failed-alert':'Bewertung konnte nicht gespeichert werden. Prüfe die Realtime-Database-Regeln.','admin-only-alert':'Nur Admin kann antworten!','reply-empty-alert':'Schreibe eine Antwort!','reply-failed-alert':'Antwort konnte nicht gespeichert werden.','owner-only-alert':'Du kannst nur deine eigene Bewertung bearbeiten.','edit-failed-alert':'Bewertung konnte nicht bearbeitet werden.','no-access-alert':'Du hast keinen Zugriff!','delete-confirm':'Diese Bewertung löschen?','delete-failed-alert':'Bewertung konnte nicht gelöscht werden.'},
+ru:{'nav-security':'Безопасность',downloadStatus:'Загрузка работает бесплатно через GitHub Pages после добавления .exe файла.',downloadChecking:'Проверяю файл приложения...',downloadStarted:'Загрузка началась.',downloadMissing:'Файл .exe ещё не загружен. Добавь его бесплатно в docs/downloads/Clearnix.exe на GitHub.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Бесплатная база',downloadMetaStatus:'Место под файл','security-kicker':'Безопасность','security-title':'Безопасная оптимизация без хаоса','security-desc':'Clearnix ускоряет систему контролируемо: отзывы хранятся в бесплатной базе, а загрузка работает без платного Storage.','security-card-1-title':'Контроль пользователя','security-card-1-desc':'Ты можешь добавить, изменить или удалить свой отзыв в любое время.','security-card-2-title':'Вход Firebase','security-card-2-desc':'Отзыв связан с твоим аккаунтом, поэтому никто другой не может его изменить.','security-card-3-title':'Чистая загрузка','security-card-3-desc':'Файл приложения будет загружаться напрямую с GitHub Pages, бесплатно и без Firebase Storage.','edit-review':'Изменить','delete-review':'Удалить','save-review':'Сохранить','cancel-edit':'Отмена','reply-review':'Ответить','admin-reply-placeholder':'Ответ администратора...','edited-label':'изменено','loading-reviews':'Загрузка отзывов...','empty-reviews':'Отзывов пока нет. Будь первым!','reviews-error':'Не удалось загрузить отзывы. Проверь правила Realtime Database.','login-required-alert':'Нужно войти!','database-not-ready':'Realtime Database не готова. Обнови страницу и попробуй снова.','fill-fields-alert':'Заполни все поля!','duplicate-review-alert':'Ты уже добавил отзыв. Каждый пользователь может добавить один отзыв.','review-saved-alert':'Отзыв сохранён. Спасибо!','review-save-failed-alert':'Не удалось сохранить отзыв. Проверь правила Realtime Database.','admin-only-alert':'Только админ может отвечать!','reply-empty-alert':'Напиши ответ!','reply-failed-alert':'Не удалось сохранить ответ.','owner-only-alert':'Можно редактировать только свой отзыв.','edit-failed-alert':'Не удалось изменить отзыв.','no-access-alert':'Нет доступа!','delete-confirm':'Удалить этот отзыв?','delete-failed-alert':'Не удалось удалить отзыв.'},
+ua:{'nav-security':'Безпека',downloadStatus:'Завантаження працює безкоштовно через GitHub Pages після додавання .exe файлу.',downloadChecking:'Перевіряю файл застосунку...',downloadStarted:'Завантаження почалося.',downloadMissing:'Файл .exe ще не завантажено. Додай його безкоштовно в docs/downloads/Clearnix.exe на GitHub.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Безкоштовна база',downloadMetaStatus:'Місце для файлу','security-kicker':'Безпека','security-title':'Безпечна оптимізація без хаосу','security-desc':'Clearnix прискорює систему контрольовано: відгуки зберігаються у безкоштовній базі, а завантаження працює без платного Storage.','security-card-1-title':'Контроль користувача','security-card-1-desc':'Ти можеш додати, редагувати або видалити свій відгук у будь-який момент.','security-card-2-title':'Вхід Firebase','security-card-2-desc':'Відгук пов’язаний з твоїм акаунтом, тому ніхто інший не може його змінити.','security-card-3-title':'Чисте завантаження','security-card-3-desc':'Файл застосунку буде завантажуватися напряму з GitHub Pages, безкоштовно і без Firebase Storage.','edit-review':'Редагувати','delete-review':'Видалити','save-review':'Зберегти','cancel-edit':'Скасувати','reply-review':'Відповісти','admin-reply-placeholder':'Відповідь адміністратора...','edited-label':'редаговано','loading-reviews':'Завантаження відгуків...','empty-reviews':'Відгуків ще немає. Будь першим!','reviews-error':'Не вдалося завантажити відгуки. Перевір правила Realtime Database.','login-required-alert':'Потрібно увійти!','database-not-ready':'Realtime Database не готова. Онови сторінку і спробуй знову.','fill-fields-alert':'Заповни всі поля!','duplicate-review-alert':'Ти вже додав відгук. Кожен користувач може додати один відгук.','review-saved-alert':'Відгук збережено. Дякую!','review-save-failed-alert':'Не вдалося зберегти відгук. Перевір правила Realtime Database.','admin-only-alert':'Тільки адмін може відповідати!','reply-empty-alert':'Напиши відповідь!','reply-failed-alert':'Не вдалося зберегти відповідь.','owner-only-alert':'Можна редагувати тільки свій відгук.','edit-failed-alert':'Не вдалося редагувати відгук.','no-access-alert':'Немає доступу!','delete-confirm':'Видалити цей відгук?','delete-failed-alert':'Не вдалося видалити відгук.'},
+es:{'nav-security':'Seguridad',downloadStatus:'La descarga funciona gratis con GitHub Pages después de añadir el archivo .exe.',downloadChecking:'Comprobando el archivo de la app...',downloadStarted:'Descarga iniciada.',downloadMissing:'El archivo .exe aún no está subido. Añádelo gratis a docs/downloads/Clearnix.exe en GitHub.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Base gratis',downloadMetaStatus:'Espacio listo','security-kicker':'Seguridad','security-title':'Optimización segura sin caos','security-desc':'Clearnix acelera el sistema de forma controlada: las opiniones usan una base gratuita y la descarga funciona sin Storage de pago.','security-card-1-title':'Control del usuario','security-card-1-desc':'Puedes añadir, editar o eliminar tu opinión en cualquier momento.','security-card-2-title':'Inicio con Firebase','security-card-2-desc':'Tu opinión está vinculada a tu cuenta, así que nadie más puede cambiarla.','security-card-3-title':'Descarga limpia','security-card-3-desc':'El archivo de la app se descargará directamente desde GitHub Pages, gratis y sin Firebase Storage.','edit-review':'Editar','delete-review':'Eliminar','save-review':'Guardar','cancel-edit':'Cancelar','reply-review':'Responder','admin-reply-placeholder':'Respuesta del administrador...','edited-label':'editado','loading-reviews':'Cargando opiniones...','empty-reviews':'No hay opiniones todavía. ¡Sé el primero!','reviews-error':'No se pudieron cargar las opiniones. Revisa las reglas de Realtime Database.','login-required-alert':'Debes iniciar sesión.','database-not-ready':'Realtime Database no está lista. Actualiza e inténtalo otra vez.','fill-fields-alert':'Rellena todos los campos.','duplicate-review-alert':'Ya añadiste una opinión. Cada usuario puede añadir una.','review-saved-alert':'Opinión guardada. ¡Gracias!','review-save-failed-alert':'No se pudo guardar la opinión. Revisa las reglas de Realtime Database.','admin-only-alert':'Solo el administrador puede responder.','reply-empty-alert':'Escribe una respuesta.','reply-failed-alert':'No se pudo guardar la respuesta.','owner-only-alert':'Solo puedes editar tu propia opinión.','edit-failed-alert':'No se pudo editar la opinión.','no-access-alert':'No tienes acceso.','delete-confirm':'¿Eliminar esta opinión?','delete-failed-alert':'No se pudo eliminar la opinión.'}
+};
+Object.keys(extraTranslations).forEach(lang=>Object.assign(translations[lang], extraTranslations[lang]));
+function tText(key){const lang=translations[currentLang]||translations.pl;return lang[key]||translations.pl[key]||key;}
+
 function changeLang(lang){
     currentLang=lang;
     let t=translations[lang];
@@ -2318,6 +2402,10 @@ function changeLang(lang){
     document.getElementById("desc").innerText=t.desc;
     const downloadBtn=document.getElementById("download-btn");
     downloadBtn.innerText=t.download;
+    document.getElementById("download-status").innerText=t.downloadStatus;
+    document.getElementById("download-meta-platform").innerText=t.downloadMetaPlatform;
+    document.getElementById("download-meta-cloud").innerText=t.downloadMetaCloud;
+    document.getElementById("download-meta-status").innerText=t.downloadMetaStatus;
     document.getElementById("how-title").innerText=t.how;
     document.getElementById("c1").innerText=t.c1;
     document.getElementById("c2").innerText=t.c2;
@@ -2354,6 +2442,15 @@ function changeLang(lang){
     document.getElementById("logout-btn").innerText=t['logout-btn'];
     document.getElementById("login-prompt-title").innerText=t['login-prompt-title'];
     document.getElementById("open-login-btn").innerText=t['open-login-btn'];
+    document.getElementById("security-kicker").innerText=t['security-kicker'];
+    document.getElementById("security-title").innerText=t['security-title'];
+    document.getElementById("security-desc").innerText=t['security-desc'];
+    document.getElementById("security-card-1-title").innerText=t['security-card-1-title'];
+    document.getElementById("security-card-1-desc").innerText=t['security-card-1-desc'];
+    document.getElementById("security-card-2-title").innerText=t['security-card-2-title'];
+    document.getElementById("security-card-2-desc").innerText=t['security-card-2-desc'];
+    document.getElementById("security-card-3-title").innerText=t['security-card-3-title'];
+    document.getElementById("security-card-3-desc").innerText=t['security-card-3-desc'];
 }
 
 // INICJALIZACJA
