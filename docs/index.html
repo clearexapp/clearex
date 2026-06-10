@@ -1004,8 +1004,10 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 @media(max-width:768px){
     .hero h1{font-size:45px;}
     .section h2{font-size:35px;}
-    .nav{padding:15px 20px;}
-    .nav-right{gap:20px;}
+    .nav{padding:15px 20px;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+    .nav-right{width:100%;gap:12px;justify-content:space-between;flex-wrap:wrap;}
+    .nav-right a{font-size:13px;}
+    .lang select{padding:8px 10px;font-size:12px;}
     .grid{grid-template-columns:1fr;}
     .card{padding:40px 20px;}
     .download-btn{padding:16px 40px;font-size:16px;}
@@ -1070,7 +1072,22 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 .security-card:hover{transform:translateY(-6px);border-color:#06b6d4;box-shadow:0 18px 34px rgba(6,182,212,0.12);}
 .security-icon{display:inline-flex;margin-bottom:16px;font-size:28px;}.security-card h3{font-size:22px;margin-bottom:10px;color:#fff;}.security-card p{color:#94a3b8;line-height:1.6;}
 .edit-review-panel{display:none;margin-top:18px;padding-top:18px;border-top:1px solid rgba(124,58,237,0.24);}.edit-review-panel.show{display:block;}
-@media(max-width:768px){.security-shell{padding:34px 22px;}.security-shell h2{font-size:34px;}.security-grid{grid-template-columns:1fr;}}
+.donations-section{padding:120px 20px;position:relative;z-index:5;overflow:hidden;}
+.donations-shell{max-width:1150px;margin:0 auto;position:relative;padding:52px;border:1px solid rgba(236,72,153,0.32);border-radius:18px;background:linear-gradient(135deg, rgba(8,12,24,0.78), rgba(6,182,212,0.12));box-shadow:0 0 45px rgba(236,72,153,0.12), inset 0 0 34px rgba(6,182,212,0.08);backdrop-filter:blur(18px);}
+.donations-shell::before{content:'';position:absolute;left:26px;right:26px;top:24px;height:1px;background:linear-gradient(90deg,transparent,#06b6d4,#ec4899,transparent);opacity:0.75;}
+.donations-kicker{color:#ec4899;font-family:'Rajdhani','Inter',sans-serif;font-size:16px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:16px;}
+.donations-shell h2{font-size:48px;margin-bottom:18px;background:linear-gradient(135deg,#ffffff 0%,#ec4899 44%,#06b6d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.donations-shell>p:not(.donations-kicker){color:#cbd5e1;max-width:760px;font-size:18px;line-height:1.7;margin-bottom:34px;}
+.donation-widgets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
+.donation-card{padding:18px;border:1px solid rgba(124,58,237,0.3);border-radius:14px;background:rgba(0,0,0,0.3);box-shadow:inset 0 0 20px rgba(124,58,237,0.06);}
+.donation-card.wide{grid-column:1/-1;}
+.donation-card h3{font-size:22px;margin-bottom:8px;color:#fff;}
+.donation-card p{color:#94a3b8;line-height:1.55;margin-bottom:14px;}
+.donation-frame{width:100%;min-height:300px;border:0;border-radius:10px;background:rgba(2,6,23,0.72);}
+.donation-card.wide .donation-frame{min-height:430px;}
+.donation-link{display:inline-flex;margin-top:12px;color:#06b6d4;font-weight:700;text-decoration:none;}
+.donation-link:hover{color:#ec4899;}
+@media(max-width:768px){.security-shell,.donations-shell{padding:34px 22px;}.security-shell h2,.donations-shell h2{font-size:34px;}.security-grid,.donation-widgets{grid-template-columns:1fr;}.donation-card.wide{grid-column:auto;}.donation-frame,.donation-card.wide .donation-frame{min-height:330px;}}
 </style>
 </head>
 
@@ -1171,6 +1188,7 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
     <div class="nav-right">
         <a href="#" onclick="goToHome(); return false;" id="nav-home">Home</a>
         <a href="#" onclick="goToSecurity(); return false;" id="nav-security">Bezpieczeństwo</a>
+        <a href="#" onclick="goToDonations(); return false;" id="nav-donations">Donejty</a>
         <a href="#" onclick="goToReviews(); return false;" id="nav-reviews">Reviews</a>
 
         <div id="user-profile" style="display:none;color:#7c3aed;font-weight:700;display:flex;align-items:center;gap:15px;">
@@ -1263,6 +1281,40 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
                 </div>
             </section>
         
+    </div>
+</div>
+
+<!-- DONATIONS PAGE -->
+<div id="donations-page" class="page">
+    <div style="min-height:100vh;padding-top:120px;padding-bottom:70px;">
+        <button class="back-btn" onclick="goToHome()" id="back-donations">← Wróć</button>
+        <section class="donations-section" id="donations">
+            <div class="donations-shell">
+                <p class="donations-kicker" id="donations-kicker">Donejty</p>
+                <h2 id="donations-title">Wesprzyj rozwój Clearnix</h2>
+                <p id="donations-desc">Dwa aktualne cele i topka miesiąca z Tipply w jednym miejscu.</p>
+                <div class="donation-widgets">
+                    <article class="donation-card">
+                        <h3 id="donation-domain-title">Domena strony</h3>
+                        <p id="donation-domain-desc">Pomóż utrzymać oficjalną domenę i dostęp do strony Clearnix.</p>
+                        <iframe class="donation-frame" title="Domena strony" loading="lazy" src="https://widgets.tipply.pl/TIPS_GOAL/c64136e6-81d3-4a60-a941-f50a491001b2/GOAL/c199008c-4a0d-4d61-a8d0-de0f87daea0d"></iframe>
+                        <a class="donation-link" id="donation-domain-open" href="https://widgets.tipply.pl/TIPS_GOAL/c64136e6-81d3-4a60-a941-f50a491001b2/GOAL/c199008c-4a0d-4d61-a8d0-de0f87daea0d" target="_blank" rel="noopener">Otwórz widget</a>
+                    </article>
+                    <article class="donation-card">
+                        <h3 id="donation-pc-title">Nowy komputer</h3>
+                        <p id="donation-pc-desc">Cel na sprzęt do szybszego budowania, testowania i rozwijania aplikacji.</p>
+                        <iframe class="donation-frame" title="Nowy komputer" loading="lazy" src="https://widgets.tipply.pl/TIPS_GOAL/c64136e6-81d3-4a60-a941-f50a491001b2/GOAL/50b407bb-b63b-4205-a1cd-faadeaebb03d"></iframe>
+                        <a class="donation-link" id="donation-pc-open" href="https://widgets.tipply.pl/TIPS_GOAL/c64136e6-81d3-4a60-a941-f50a491001b2/GOAL/50b407bb-b63b-4205-a1cd-faadeaebb03d" target="_blank" rel="noopener">Otwórz widget</a>
+                    </article>
+                    <article class="donation-card wide">
+                        <h3 id="donation-ranking-title">Topka miesiąca</h3>
+                        <p id="donation-ranking-desc">Największe wsparcia z bieżącego miesiąca.</p>
+                        <iframe class="donation-frame" title="Ranking miesiąca" loading="lazy" src="https://widgets.tipply.pl/LARGEST_MESSAGES/c64136e6-81d3-4a60-a941-f50a491001b2/DEFAULT_LARGEST_DONATES_5"></iframe>
+                        <a class="donation-link" id="donation-ranking-open" href="https://widgets.tipply.pl/LARGEST_MESSAGES/c64136e6-81d3-4a60-a941-f50a491001b2/DEFAULT_LARGEST_DONATES_5" target="_blank" rel="noopener">Otwórz widget</a>
+                    </article>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -2095,6 +2147,12 @@ function goToSecurity(){
     window.scrollTo(0,0);
 }
 
+function goToDonations(){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('donations-page').classList.add('active');
+    window.scrollTo(0,0);
+}
+
 function goToReviews(){
     if(!currentUser){
         openAuthModal();
@@ -2399,6 +2457,15 @@ ua:{'nav-security':'Безпека',downloadStatus:'Завантаж остан�
 es:{'nav-security':'Seguridad',downloadStatus:'Descarga el instalador más reciente de Clearnix desde el sitio oficial.',downloadChecking:'Comprobando el archivo de la app...',downloadStarted:'Descarga iniciada.',downloadMissing:'No se pudo descargar el instalador. Revisa /Clearnix-Setup.exe.',downloadMetaPlatform:'Windows .exe',downloadMetaCloud:'Base gratis',downloadMetaStatus:'Espacio listo','security-kicker':'Seguridad','security-title':'Optimización segura sin caos','security-desc':'Clearnix acelera el sistema de forma controlada: las opiniones usan una base gratuita y la descarga funciona sin Storage de pago.','security-card-1-title':'Control del usuario','security-card-1-desc':'Puedes añadir, editar o eliminar tu opinión en cualquier momento.','security-card-2-title':'Inicio con Firebase','security-card-2-desc':'Tu opinión está vinculada a tu cuenta, así que nadie más puede cambiarla.','security-card-3-title':'Descarga limpia','security-card-3-desc':'El archivo de la app se descargará directamente desde GitHub Pages, gratis y sin Firebase Storage.','edit-review':'Editar','delete-review':'Eliminar','save-review':'Guardar','cancel-edit':'Cancelar','reply-review':'Responder','admin-reply-placeholder':'Respuesta del administrador...','edited-label':'editado','loading-reviews':'Cargando opiniones...','empty-reviews':'No hay opiniones todavía. ¡Sé el primero!','reviews-error':'No se pudieron cargar las opiniones. Revisa las reglas de Realtime Database.','login-required-alert':'Debes iniciar sesión.','database-not-ready':'Realtime Database no está lista. Actualiza e inténtalo otra vez.','fill-fields-alert':'Rellena todos los campos.','duplicate-review-alert':'Ya añadiste una opinión. Cada usuario puede añadir una.','review-saved-alert':'Opinión guardada. ¡Gracias!','review-save-failed-alert':'No se pudo guardar la opinión. Revisa las reglas de Realtime Database.','admin-only-alert':'Solo el administrador puede responder.','reply-empty-alert':'Escribe una respuesta.','reply-failed-alert':'No se pudo guardar la respuesta.','owner-only-alert':'Solo puedes editar tu propia opinión.','edit-failed-alert':'No se pudo editar la opinión.','no-access-alert':'No tienes acceso.','delete-confirm':'¿Eliminar esta opinión?','delete-failed-alert':'No se pudo eliminar la opinión.'}
 };
 Object.keys(extraTranslations).forEach(lang=>Object.assign(translations[lang], extraTranslations[lang]));
+const donationTranslations={
+pl:{'nav-donations':'Donejty','donations-kicker':'Donejty','donations-title':'Wesprzyj rozwój Clearnix','donations-desc':'Dwa aktualne cele i topka miesiąca z Tipply w jednym miejscu.','donation-domain-title':'Domena strony','donation-domain-desc':'Pomóż utrzymać oficjalną domenę i dostęp do strony Clearnix.','donation-pc-title':'Nowy komputer','donation-pc-desc':'Cel na sprzęt do szybszego budowania, testowania i rozwijania aplikacji.','donation-ranking-title':'Topka miesiąca','donation-ranking-desc':'Największe wsparcia z bieżącego miesiąca.','donation-open':'Otwórz widget'},
+en:{'nav-donations':'Donations','donations-kicker':'Donations','donations-title':'Support Clearnix development','donations-desc':'Two active goals and this month’s top supporters from Tipply in one place.','donation-domain-title':'Website domain','donation-domain-desc':'Help keep the official domain and Clearnix site online.','donation-pc-title':'New computer','donation-pc-desc':'A goal for hardware that makes building, testing, and developing the app faster.','donation-ranking-title':'Monthly top','donation-ranking-desc':'The biggest support from the current month.','donation-open':'Open widget'},
+de:{'nav-donations':'Spenden','donations-kicker':'Spenden','donations-title':'Unterstütze die Entwicklung von Clearnix','donations-desc':'Zwei aktive Ziele und die Monats-Topliste von Tipply an einem Ort.','donation-domain-title':'Website-Domain','donation-domain-desc':'Hilf, die offizielle Domain und die Clearnix-Seite online zu halten.','donation-pc-title':'Neuer Computer','donation-pc-desc':'Ein Ziel für Hardware, die Build, Tests und Entwicklung schneller macht.','donation-ranking-title':'Top des Monats','donation-ranking-desc':'Die größte Unterstützung des aktuellen Monats.','donation-open':'Widget öffnen'},
+ru:{'nav-donations':'Донаты','donations-kicker':'Донаты','donations-title':'Поддержать развитие Clearnix','donations-desc':'Две активные цели и топ месяца из Tipply в одном месте.','donation-domain-title':'Домен сайта','donation-domain-desc':'Помоги поддерживать официальный домен и сайт Clearnix онлайн.','donation-pc-title':'Новый компьютер','donation-pc-desc':'Цель на оборудование для более быстрой сборки, тестов и разработки приложения.','donation-ranking-title':'Топ месяца','donation-ranking-desc':'Самая большая поддержка за текущий месяц.','donation-open':'Открыть виджет'},
+ua:{'nav-donations':'Донати','donations-kicker':'Донати','donations-title':'Підтримай розвиток Clearnix','donations-desc':'Дві активні цілі та топ місяця з Tipply в одному місці.','donation-domain-title':'Домен сайту','donation-domain-desc':'Допоможи підтримувати офіційний домен і сайт Clearnix онлайн.','donation-pc-title':'Новий комп’ютер','donation-pc-desc':'Ціль на обладнання для швидшого збирання, тестування та розвитку застосунку.','donation-ranking-title':'Топ місяця','donation-ranking-desc':'Найбільша підтримка за поточний місяць.','donation-open':'Відкрити віджет'},
+es:{'nav-donations':'Donaciones','donations-kicker':'Donaciones','donations-title':'Apoya el desarrollo de Clearnix','donations-desc':'Dos objetivos activos y el top mensual de Tipply en un solo lugar.','donation-domain-title':'Dominio del sitio','donation-domain-desc':'Ayuda a mantener el dominio oficial y el sitio de Clearnix en línea.','donation-pc-title':'Nuevo ordenador','donation-pc-desc':'Un objetivo para hardware que acelere la compilación, las pruebas y el desarrollo de la app.','donation-ranking-title':'Top del mes','donation-ranking-desc':'Los mayores apoyos del mes actual.','donation-open':'Abrir widget'}
+};
+Object.keys(donationTranslations).forEach(lang=>Object.assign(translations[lang], donationTranslations[lang]));
 function tText(key){const lang=translations[currentLang]||translations.pl;return lang[key]||translations.pl[key]||key;}
 
 function changeLang(lang){
@@ -2421,8 +2488,12 @@ function changeLang(lang){
     document.getElementById("reviews-title").innerText=t['reviews-title'];
     document.getElementById("add-review-btn").innerText=t['add-review'];
     document.getElementById("nav-home").innerText=t['nav-home'];
+    document.getElementById("nav-security").innerText=t['nav-security'];
+    document.getElementById("nav-donations").innerText=t['nav-donations'];
     document.getElementById("nav-reviews").innerText=t['nav-reviews'];
     document.getElementById("back-home").innerText=t['back-home'];
+    document.getElementById("back-security").innerText=t['back-home'];
+    document.getElementById("back-donations").innerText=t['back-home'];
     document.getElementById("back-reviews").innerText=t['back-home'];
     document.getElementById("login-title").innerText=t['login-title'];
     document.getElementById("login-desc").innerText=t['login-desc'];
@@ -2458,6 +2529,18 @@ function changeLang(lang){
     document.getElementById("security-card-2-desc").innerText=t['security-card-2-desc'];
     document.getElementById("security-card-3-title").innerText=t['security-card-3-title'];
     document.getElementById("security-card-3-desc").innerText=t['security-card-3-desc'];
+    document.getElementById("donations-kicker").innerText=t['donations-kicker'];
+    document.getElementById("donations-title").innerText=t['donations-title'];
+    document.getElementById("donations-desc").innerText=t['donations-desc'];
+    document.getElementById("donation-domain-title").innerText=t['donation-domain-title'];
+    document.getElementById("donation-domain-desc").innerText=t['donation-domain-desc'];
+    document.getElementById("donation-pc-title").innerText=t['donation-pc-title'];
+    document.getElementById("donation-pc-desc").innerText=t['donation-pc-desc'];
+    document.getElementById("donation-ranking-title").innerText=t['donation-ranking-title'];
+    document.getElementById("donation-ranking-desc").innerText=t['donation-ranking-desc'];
+    document.getElementById("donation-domain-open").innerText=t['donation-open'];
+    document.getElementById("donation-pc-open").innerText=t['donation-open'];
+    document.getElementById("donation-ranking-open").innerText=t['donation-open'];
 }
 
 // INICJALIZACJA
