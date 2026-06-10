@@ -1086,10 +1086,12 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
 .donation-frame-wrap{height:250px;overflow:hidden;border:1px solid rgba(6,182,212,0.12);border-radius:10px;background:rgba(2,6,23,0.72);}
 .donation-card.wide .donation-frame-wrap{height:340px;}
 .donation-frame{width:200%;height:200%;border:0;background:rgba(2,6,23,0.72);transform:scale(0.5);transform-origin:top left;}
-.donation-actions{display:flex;justify-content:center;margin-top:26px;}
+.donation-actions{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:26px;}
 .donation-donate-btn{display:inline-flex;align-items:center;justify-content:center;min-width:190px;padding:16px 34px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;text-decoration:none;font-family:'Rajdhani','Inter',sans-serif;font-size:22px;font-weight:800;letter-spacing:0.04em;box-shadow:0 0 24px rgba(236,72,153,0.24);transition:all 0.25s ease;}
 .donation-donate-btn:hover{transform:translateY(-3px);box-shadow:0 0 34px rgba(6,182,212,0.24);}
-@media(max-width:768px){.security-shell,.donations-shell{padding:34px 22px;}.security-shell h2,.donations-shell h2{font-size:34px;}.security-grid,.donation-widgets{grid-template-columns:1fr;}.donation-card.wide{grid-column:auto;}.donation-card p{min-height:0;}.donation-frame-wrap,.donation-card.wide .donation-frame-wrap{height:250px;}}
+.donation-money-note{color:#94a3b8;font-size:14px;line-height:1.45;max-width:320px;}
+.donation-money-note strong{color:#06b6d4;}
+@media(max-width:768px){.security-shell,.donations-shell{padding:34px 22px;}.security-shell h2,.donations-shell h2{font-size:34px;}.security-grid,.donation-widgets{grid-template-columns:1fr;}.donation-card.wide{grid-column:auto;}.donation-card p{min-height:0;}.donation-frame-wrap,.donation-card.wide .donation-frame-wrap{height:250px;}.donation-actions{flex-direction:column;}.donation-money-note{text-align:center;}}
 </style>
 </head>
 
@@ -1297,8 +1299,8 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
                 <p id="donations-desc">Dwa aktualne cele i topka miesiąca z Tipply w jednym miejscu.</p>
                 <div class="donation-widgets">
                     <article class="donation-card">
-                        <h3 id="donation-domain-title">Domena strony</h3>
-                        <p id="donation-domain-desc">Pomóż utrzymać oficjalną domenę i dostęp do strony Clearnix.</p>
+                        <h3 id="donation-domain-title">Nowa domena</h3>
+                        <p id="donation-domain-desc">Pomóż zebrać środki na nową domenę dla strony Clearnix.</p>
                         <div class="donation-frame-wrap"><iframe class="donation-frame" title="Domena strony" loading="lazy" src="https://widgets.tipply.pl/TIPS_GOAL/c64136e6-81d3-4a60-a941-f50a491001b2/GOAL/c199008c-4a0d-4d61-a8d0-de0f87daea0d"></iframe></div>
                     </article>
                     <article class="donation-card">
@@ -1314,6 +1316,7 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
                 </div>
                 <div class="donation-actions">
                     <a class="donation-donate-btn" id="donation-cta" href="https://tipply.pl/@anarchiczny_2" target="_blank" rel="noopener">Donate</a>
+                    <span class="donation-money-note" id="donation-money-note">Wpłaty idą przez Tipply, a cele są liczone w <strong>PLN / zł</strong>.</span>
                 </div>
             </div>
         </section>
@@ -2167,38 +2170,27 @@ function goToReviews(){
 }
 
 function goToFeature(type){
-    const features={
-        cleaning:{
-            title:'Optymalizacja komputera',
-            desc:'Aplikacja optymalizuje działanie Twojego komputera poprzez czyszczenie niepotrzebnych procesów i optymalizację zasobów systemowych.',
-            items:['Zamykanie niepotrzebnych procesów w tle','Optymalizacja pamięci RAM','Czyszczenie rejestru systemu','Przyspieszenie rozruchu systemu']
-        },
-        internet:{
-            title:'Optymalizacja internetu',
-            desc:'Zwiększa szybkość połączenia internetowego poprzez optymalizację ustawień sieciowych i usuwanie bloatware\'u.',
-            items:['Optymalizacja DNS','Przyspieszenie transferu danych','Usunięcie balastowych aplikacji','Zmniejszenie opóźnień (ping)']
-        },
-        cache:{
-            title:'Czyszczenie plików',
-            desc:'Aplikacja czyści nie potrzebne pliki systemowe i przegladarkowe takie jak pliki cache, cookies i pliki tymczasowe.',
-            items:['Usuwanie plików cache','Czyszczenie cookies','Usunięcie plików tymczasowych','Odzyskanie miejsca na dysku']
-        }
-    };
-    
-    const feature=features[type];
+    const langFeatures=featureTranslations[currentLang]||featureTranslations.pl;
+    const feature=langFeatures[type]||featureTranslations.pl[type];
+    if(!feature) return;
+
     document.getElementById('feature-title').innerText=feature.title;
     document.getElementById('feature-description').innerText=feature.desc;
-    
-    let itemsHtml='';
-    feature.items.forEach(item=>{
-        itemsHtml+=`<li>${item}</li>`;
-    });
-    document.getElementById('feature-list').innerHTML=itemsHtml;
-    
+    document.getElementById('feature-list').innerHTML=feature.items.map(item=>`<li>${item}</li>`).join('');
+
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById('feature-page').classList.add('active');
     window.scrollTo(0,0);
 }
+
+const featureTranslations={
+pl:{cleaning:{title:'Optymalizacja komputera',desc:'Clearnix pomaga poprawić działanie komputera przez ograniczenie zbędnych procesów i uporządkowanie zasobów systemowych.',items:['Zamykanie zbędnych procesów w tle','Optymalizacja pamięci RAM','Porządkowanie ustawień systemowych','Szybszy i stabilniejszy start systemu']},internet:{title:'Optymalizacja internetu',desc:'Clearnix pomaga zmniejszyć opóźnienia i uporządkować ustawienia sieciowe, żeby połączenie działało stabilniej.',items:['Optymalizacja ustawień DNS','Lepsza stabilność połączenia','Ograniczenie zbędnych aplikacji w tle','Zmniejszenie opóźnień w grach']},cache:{title:'Czyszczenie plików',desc:'Clearnix usuwa niepotrzebne pliki tymczasowe, cache i pozostałości, które potrafią zajmować miejsce na dysku.',items:['Usuwanie plików cache','Czyszczenie plików tymczasowych','Porządkowanie danych przeglądarek','Odzyskiwanie miejsca na dysku']}},
+en:{cleaning:{title:'PC optimization',desc:'Clearnix helps improve PC performance by reducing unnecessary background processes and organizing system resources.',items:['Close unnecessary background processes','Optimize RAM usage','Clean up system settings','Faster and more stable startup']},internet:{title:'Internet optimization',desc:'Clearnix helps reduce latency and tune network settings so your connection feels more stable.',items:['Optimize DNS settings','Improve connection stability','Limit unnecessary background apps','Reduce gaming latency']},cache:{title:'File cleanup',desc:'Clearnix removes temporary files, cache, and leftovers that can take up disk space.',items:['Remove cache files','Clean temporary files','Tidy browser data','Recover disk space']}},
+de:{cleaning:{title:'PC-Optimierung',desc:'Clearnix hilft, die PC-Leistung zu verbessern, indem unnötige Hintergrundprozesse reduziert und Systemressourcen geordnet werden.',items:['Unnötige Hintergrundprozesse schließen','RAM-Nutzung optimieren','Systemeinstellungen aufräumen','Schnellerer und stabilerer Systemstart']},internet:{title:'Internet-Optimierung',desc:'Clearnix hilft, Latenzen zu verringern und Netzwerkeinstellungen für eine stabilere Verbindung zu optimieren.',items:['DNS-Einstellungen optimieren','Verbindungsstabilität verbessern','Unnötige Hintergrund-Apps begrenzen','Gaming-Latenz reduzieren']},cache:{title:'Dateibereinigung',desc:'Clearnix entfernt temporäre Dateien, Cache und Reste, die Speicherplatz belegen können.',items:['Cache-Dateien entfernen','Temporäre Dateien bereinigen','Browserdaten aufräumen','Speicherplatz zurückgewinnen']}},
+ru:{cleaning:{title:'Оптимизация ПК',desc:'Clearnix помогает улучшить работу компьютера, уменьшая лишние фоновые процессы и упорядочивая системные ресурсы.',items:['Закрытие лишних фоновых процессов','Оптимизация использования RAM','Упорядочивание системных настроек','Более быстрый и стабильный запуск']},internet:{title:'Оптимизация интернета',desc:'Clearnix помогает снизить задержку и настроить сеть так, чтобы соединение было стабильнее.',items:['Оптимизация DNS','Повышение стабильности соединения','Ограничение лишних фоновых приложений','Снижение задержки в играх']},cache:{title:'Очистка файлов',desc:'Clearnix удаляет временные файлы, кэш и остатки, которые могут занимать место на диске.',items:['Удаление файлов кэша','Очистка временных файлов','Упорядочивание данных браузеров','Освобождение места на диске']}},
+ua:{cleaning:{title:'Оптимізація ПК',desc:'Clearnix допомагає покращити роботу комп’ютера, зменшуючи зайві фонові процеси та впорядковуючи системні ресурси.',items:['Закриття зайвих фонових процесів','Оптимізація використання RAM','Впорядкування системних налаштувань','Швидший і стабільніший запуск']},internet:{title:'Оптимізація інтернету',desc:'Clearnix допомагає зменшити затримку та налаштувати мережу для стабільнішого з’єднання.',items:['Оптимізація DNS','Покращення стабільності з’єднання','Обмеження зайвих фонових застосунків','Зменшення затримки в іграх']},cache:{title:'Очищення файлів',desc:'Clearnix видаляє тимчасові файли, кеш і залишки, які можуть займати місце на диску.',items:['Видалення файлів кешу','Очищення тимчасових файлів','Впорядкування даних браузерів','Звільнення місця на диску']}},
+es:{cleaning:{title:'Optimización del PC',desc:'Clearnix ayuda a mejorar el rendimiento del PC reduciendo procesos innecesarios en segundo plano y ordenando los recursos del sistema.',items:['Cerrar procesos innecesarios en segundo plano','Optimizar el uso de RAM','Ordenar ajustes del sistema','Inicio más rápido y estable']},internet:{title:'Optimización de internet',desc:'Clearnix ayuda a reducir la latencia y ajustar la red para que la conexión sea más estable.',items:['Optimizar ajustes DNS','Mejorar la estabilidad de la conexión','Limitar apps innecesarias en segundo plano','Reducir la latencia en juegos']},cache:{title:'Limpieza de archivos',desc:'Clearnix elimina archivos temporales, caché y restos que pueden ocupar espacio en el disco.',items:['Eliminar archivos de caché','Limpiar archivos temporales','Ordenar datos del navegador','Recuperar espacio en disco']}}
+};
 
 // TRANSLATIONS
 const translations={
@@ -2460,12 +2452,12 @@ es:{'nav-security':'Seguridad',downloadStatus:'Descarga el instalador más recie
 };
 Object.keys(extraTranslations).forEach(lang=>Object.assign(translations[lang], extraTranslations[lang]));
 const donationTranslations={
-pl:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Wesprzyj rozwój Clearnix','donations-desc':'Dwa aktualne cele i topka miesiąca z Tipply w jednym miejscu.','donation-domain-title':'Domena strony','donation-domain-desc':'Pomóż utrzymać oficjalną domenę i dostęp do strony Clearnix.','donation-pc-title':'Nowy komputer','donation-pc-desc':'Cel na sprzęt do szybszego budowania, testowania i rozwijania aplikacji.','donation-ranking-title':'Topka miesiąca','donation-ranking-desc':'Największe wsparcia z bieżącego miesiąca.','donation-cta':'Donate'},
-en:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Support Clearnix development','donations-desc':'Two active goals and this month’s top supporters from Tipply in one clean view.','donation-domain-title':'Website domain','donation-domain-desc':'Help keep the official domain and Clearnix site online.','donation-pc-title':'New computer','donation-pc-desc':'A hardware goal for faster builds, testing, and app development.','donation-ranking-title':'Monthly top','donation-ranking-desc':'The biggest support from the current month.','donation-cta':'Donate'},
-de:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Unterstütze die Entwicklung von Clearnix','donations-desc':'Zwei aktive Ziele und die Monats-Topliste von Tipply in einer sauberen Ansicht.','donation-domain-title':'Website-Domain','donation-domain-desc':'Hilf, die offizielle Domain und die Clearnix-Seite online zu halten.','donation-pc-title':'Neuer Computer','donation-pc-desc':'Ein Hardware-Ziel für schnellere Builds, Tests und App-Entwicklung.','donation-ranking-title':'Top des Monats','donation-ranking-desc':'Die größte Unterstützung des aktuellen Monats.','donation-cta':'Donate'},
-ru:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Поддержать развитие Clearnix','donations-desc':'Две активные цели и топ месяца из Tipply в одном аккуратном разделе.','donation-domain-title':'Домен сайта','donation-domain-desc':'Помоги поддерживать официальный домен и сайт Clearnix онлайн.','donation-pc-title':'Новый компьютер','donation-pc-desc':'Цель на оборудование для более быстрой сборки, тестов и разработки приложения.','donation-ranking-title':'Топ месяца','donation-ranking-desc':'Самая большая поддержка за текущий месяц.','donation-cta':'Donate'},
-ua:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Підтримай розвиток Clearnix','donations-desc':'Дві активні цілі та топ місяця з Tipply в одному чистому розділі.','donation-domain-title':'Домен сайту','donation-domain-desc':'Допоможи підтримувати офіційний домен і сайт Clearnix онлайн.','donation-pc-title':'Новий комп’ютер','donation-pc-desc':'Ціль на обладнання для швидшого збирання, тестування та розвитку застосунку.','donation-ranking-title':'Топ місяця','donation-ranking-desc':'Найбільша підтримка за поточний місяць.','donation-cta':'Donate'},
-es:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Apoya el desarrollo de Clearnix','donations-desc':'Dos objetivos activos y el top mensual de Tipply en una vista limpia.','donation-domain-title':'Dominio del sitio','donation-domain-desc':'Ayuda a mantener el dominio oficial y el sitio de Clearnix en línea.','donation-pc-title':'Nuevo ordenador','donation-pc-desc':'Un objetivo de hardware para compilar, probar y desarrollar la app más rápido.','donation-ranking-title':'Top del mes','donation-ranking-desc':'Los mayores apoyos del mes actual.','donation-cta':'Donate'}
+pl:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Wesprzyj rozwój Clearnix','donations-desc':'Dwa aktualne cele i topka miesiąca z Tipply w jednym miejscu.','donation-domain-title':'Nowa domena','donation-domain-desc':'Pomóż zebrać środki na nową domenę dla strony Clearnix.','donation-pc-title':'Nowy komputer','donation-pc-desc':'Cel na sprzęt do szybszego budowania, testowania i rozwijania aplikacji.','donation-ranking-title':'Topka miesiąca','donation-ranking-desc':'Największe wsparcia z bieżącego miesiąca.','donation-money-note':'Wpłaty idą przez Tipply, a cele są liczone w <strong>PLN / zł</strong>.','donation-cta':'Donate'},
+en:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Support Clearnix development','donations-desc':'Two active goals and this month’s top supporters from Tipply in one clean view.','donation-domain-title':'New domain','donation-domain-desc':'Help fund a new domain for the Clearnix website.','donation-pc-title':'New computer','donation-pc-desc':'A hardware goal for faster builds, testing, and app development.','donation-ranking-title':'Monthly top','donation-ranking-desc':'The biggest support from the current month.','donation-money-note':'Donations go through Tipply, and the goals are counted in <strong>PLN / zł</strong>.','donation-cta':'Donate'},
+de:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Unterstütze die Entwicklung von Clearnix','donations-desc':'Zwei aktive Ziele und die Monats-Topliste von Tipply in einer sauberen Ansicht.','donation-domain-title':'Neue Domain','donation-domain-desc':'Hilf, eine neue Domain für die Clearnix-Website zu finanzieren.','donation-pc-title':'Neuer Computer','donation-pc-desc':'Ein Hardware-Ziel für schnellere Builds, Tests und App-Entwicklung.','donation-ranking-title':'Top des Monats','donation-ranking-desc':'Die größte Unterstützung des aktuellen Monats.','donation-money-note':'Spenden laufen über Tipply, und die Ziele werden in <strong>PLN / zł</strong> gezählt.','donation-cta':'Donate'},
+ru:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Поддержать развитие Clearnix','donations-desc':'Две активные цели и топ месяца из Tipply в одном аккуратном разделе.','donation-domain-title':'Новый домен','donation-domain-desc':'Помоги собрать средства на новый домен для сайта Clearnix.','donation-pc-title':'Новый компьютер','donation-pc-desc':'Цель на оборудование для более быстрой сборки, тестов и разработки приложения.','donation-ranking-title':'Топ месяца','donation-ranking-desc':'Самая большая поддержка за текущий месяц.','donation-money-note':'Донаты проходят через Tipply, а цели считаются в <strong>PLN / zł</strong>.','donation-cta':'Donate'},
+ua:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Підтримай розвиток Clearnix','donations-desc':'Дві активні цілі та топ місяця з Tipply в одному чистому розділі.','donation-domain-title':'Новий домен','donation-domain-desc':'Допоможи зібрати кошти на новий домен для сайту Clearnix.','donation-pc-title':'Новий комп’ютер','donation-pc-desc':'Ціль на обладнання для швидшого збирання, тестування та розвитку застосунку.','donation-ranking-title':'Топ місяця','donation-ranking-desc':'Найбільша підтримка за поточний місяць.','donation-money-note':'Донати проходять через Tipply, а цілі рахуються в <strong>PLN / zł</strong>.','donation-cta':'Donate'},
+es:{'nav-donations':'Donate','donations-kicker':'Donate','donations-title':'Apoya el desarrollo de Clearnix','donations-desc':'Dos objetivos activos y el top mensual de Tipply en una vista limpia.','donation-domain-title':'Nuevo dominio','donation-domain-desc':'Ayuda a financiar un nuevo dominio para el sitio de Clearnix.','donation-pc-title':'Nuevo ordenador','donation-pc-desc':'Un objetivo de hardware para compilar, probar y desarrollar la app más rápido.','donation-ranking-title':'Top del mes','donation-ranking-desc':'Los mayores apoyos del mes actual.','donation-money-note':'Las donaciones pasan por Tipply y los objetivos se cuentan en <strong>PLN / zł</strong>.','donation-cta':'Donate'}
 };
 Object.keys(donationTranslations).forEach(lang=>Object.assign(translations[lang], donationTranslations[lang]));
 function tText(key){const lang=translations[currentLang]||translations.pl;return lang[key]||translations.pl[key]||key;}
@@ -2540,6 +2532,7 @@ function changeLang(lang){
     document.getElementById("donation-pc-desc").innerText=t['donation-pc-desc'];
     document.getElementById("donation-ranking-title").innerText=t['donation-ranking-title'];
     document.getElementById("donation-ranking-desc").innerText=t['donation-ranking-desc'];
+    document.getElementById("donation-money-note").innerHTML=t['donation-money-note'];
     document.getElementById("donation-cta").innerText=t['donation-cta'];
 }
 
