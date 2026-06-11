@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearnix</title>
+    <meta name="description" content="Clearnix - gamingowy optymalizator Windows do poprawy wydajności komputera, internetu i czyszczenia niepotrzebnych plików.">
+    <link rel="canonical" href="https://www.clearnix.dpdns.org/">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clearnix</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -1194,7 +1196,7 @@ h1, h2, h3, .logo, button, .card-content, .review-author{
     <div class="nav-right">
         <a href="#" onclick="goToHome(); return false;" id="nav-home">Home</a>
         <a href="#" onclick="goToSecurity(); return false;" id="nav-security">Bezpieczeństwo</a>
-        <a href="#" onclick="goToDonations(); return false;" id="nav-donations">Donate</a>
+        <a href="#donate" onclick="goToDonations(); return false;" id="nav-donations">Donate</a>
         <a href="#" onclick="goToReviews(); return false;" id="nav-reviews">Reviews</a>
 
         <div id="user-profile" style="display:none;color:#7c3aed;font-weight:700;display:flex;align-items:center;gap:15px;">
@@ -2150,6 +2152,7 @@ async function startDownload(){
 function goToHome(){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById('home-page').classList.add('active');
+    if(location.hash==='#donate') history.replaceState(null,'',location.pathname+location.search);
     loadReviews();
     window.scrollTo(0,0);
 }
@@ -2163,7 +2166,14 @@ function goToSecurity(){
 function goToDonations(){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById('donations-page').classList.add('active');
+    if(location.hash!=='#donate') history.replaceState(null,'','#donate');
     window.scrollTo(0,0);
+}
+
+function openPageFromHash(){
+    if(location.hash==='#donate'){
+        goToDonations();
+    }
 }
 
 function goToReviews(){
@@ -2552,6 +2562,7 @@ window.addEventListener('load',()=>{
     initializeGoogleAuth();
     loadReviews();
     updateUserProfile();
+    openPageFromHash();
     
     // Licznik znaków w opinii
     const opinionField=document.getElementById('opinion');
@@ -2569,6 +2580,8 @@ window.addEventListener('load',()=>{
         }
     }
 });
+
+window.addEventListener('hashchange',openPageFromHash);
 
 </script>
 
