@@ -1,8 +1,9 @@
 {
-  "version": "0.1.2",
-  "latest_version": "0.1.2",
-  "download_url": "https://clearnix.dpdns.org/Clearnix-Setup.exe",
-  "installer_url": "https://clearnix.dpdns.org/Clearnix-Setup.exe",
-  "notes": "Nowa wersja Clearnix",
-  "published_at": "2026-06-08"
+  "version": "0.1.3",
+  "update_type": "patch",
+  "download_url": "https://www.clearnix.dpdns.org/downloads/Clearnix-Update.zip",
+  "installer_url": "https://www.clearnix.dpdns.org/downloads/Clearnix-Setup.exe",
+  "size": 6178685,
+  "sha256": "08387B0E3552BF6717D0601EC6E75D4BEB5112470223C4F2FB71CEA06F8E2CCB",
+  "notes": "Paczka aktualizacji Clearnix 0.1.3"
 }
